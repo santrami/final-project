@@ -27,7 +27,10 @@ export default function Page() {
     updateScore(result);
     
   };
+  // get result of round
 
+  // create a socket.io connection
+  
   const getResult = (userChoice: string, computerChoice: string): string => {
     if (userChoice === computerChoice) {
       return "Es un empate!";
