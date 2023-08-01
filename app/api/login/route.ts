@@ -1,3 +1,4 @@
+import { signJwtAccessToken } from "@/lib/jwt";
 import prismadb from "@/lib/prismadb";
 import * as bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
@@ -18,7 +19,12 @@ export async function POST(request:Request){
 
     if(user && (await bcrypt.compare(body.password, user.password)) ){
         const {password, ...userWithoutPass} = user;
-        return new Response(JSON.stringify(userWithoutPass));
+        const accessToken = signJwtAccessToken(userWithoutPass);
+        const result = {
+            ...userWithoutPass,
+            accessToken
+        }
+        return new Response(JSON.stringify(result));
     }
     else{
         return new NextResponse(JSON.stringify("Invalid username or password"), {status: 401});
