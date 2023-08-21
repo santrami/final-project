@@ -1,8 +1,25 @@
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const handler = NextAuth({
+  /* adapter: PrismaAdapter(prisma), */
   providers: [
+    GoogleProvider({
+      clientId: String(process.env.GOOGLE_CLIENT_ID),
+      clientSecret: String(process.env.GOOGLE_CLIENT_SECRET),
+      /* authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }
+      } */
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -29,16 +46,20 @@ const handler = NextAuth({
       },
     }),
   ],
+
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === "update") {
+        return { ...token, ...session.user };
+      }
       return { ...token, ...user };
     },
-    async session({session, token}){
+
+    async session({ session, token }) {
       session.user = token as any;
       return session;
-    }
+    },
   },
-  
 });
 
 export { handler as GET, handler as POST };

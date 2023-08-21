@@ -14,7 +14,7 @@ export async function GET(
   }
 
   const userMessages = await prismadb.message.findMany({
-    where: { authorId: Number(params.id) },
+    where: { authorId: String(params.id) },
     include: {
       author: {
         select: {
