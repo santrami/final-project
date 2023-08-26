@@ -7,7 +7,10 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const handler = NextAuth({
-  /* adapter: PrismaAdapter(prisma), */
+  session: {
+    strategy: "jwt",
+  },
+  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: String(process.env.GOOGLE_CLIENT_ID),
@@ -23,25 +26,30 @@ const handler = NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        email: { label: "email", type: "text", placeholder: "jsmith" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const res = await fetch("http://localhost:3000/api/login", {
+        try {
+          const res = await fetch("http://localhost:3000/api/login", {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            username: credentials?.username,
+            username: credentials?.email,
             password: credentials?.password,
           }),
-        });
+        });     
 
         const user = await res.json();
-
+        console.log(user);
         if (user) {
           return user;
         } else {
           return null;
+        }
+        } catch (error) {
+          console.log(error);
+          
         }
       },
     }),

@@ -5,20 +5,21 @@ import Image from "next/image";
 function SigninButton() {
   const { data: session } = useSession();
   session?.user.accessToken;
+  //console.log(session)
 
   if (session && session.user) {
     {
-      console.log(session.user);
+      console.log(session);
     }
     return (
       <div className="flex gap-6 items-center">
         <div className="flex gap-3">
-          <Image
-            src={session.user.image}
+          {/* <Image
+            src={session.user.image ? session.user.image : "https://placehold.co/600x400"}
             alt="userIcon"
             width="30"
             height="30"
-          />
+          /> */}
           <p className="text-sky-600">{session.user.name}</p>
         </div>
         <Button onClick={() => signOut()} variant="default">
@@ -29,7 +30,9 @@ function SigninButton() {
   }
 
   return (
-    <Button onClick={async () => await signIn()} variant="default">
+    <Button onClick={async () => await signIn('undefined', {
+      callbackUrl: 'http://localhost:3000/game'
+    })} variant="default">
       Sign In
     </Button>
   );
