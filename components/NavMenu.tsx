@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import {
   NavigationMenu,
@@ -15,16 +14,20 @@ import SigninButton from "./SigninButton";
 export default function NavMenu() {
   return (
     <div className="flex justify-between">
-      <SigninButton />
-
+      {/* <Button variant="default">
+        <Link href="/game">link</Link>
+      </Button> */}
+      <SigninButton/>
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                <Link  href="/game">link</Link>
-              </NavigationMenuLink>
+            <NavigationMenuContent className="px-4">
+              <Link href="/game" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Game
+                </NavigationMenuLink>
+              </Link>
             </NavigationMenuContent>
           </NavigationMenuItem>
         </NavigationMenuList>

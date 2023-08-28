@@ -18,7 +18,7 @@ export const RegisterForm = () => {
     setFormValues({ name: "", email: "", password: "" });
 
     try {
-      const res = await fetch("/api/auth/user", {
+      const res = await fetch("/api/user", { 
         method: "POST",
         body: JSON.stringify(formValues),
         headers: {
@@ -36,6 +36,7 @@ export const RegisterForm = () => {
     } catch (error: any) {
       setLoading(false);
       setError(error);
+      //console.log(error);
     }
   };
 

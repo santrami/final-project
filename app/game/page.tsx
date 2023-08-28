@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {signOut} from "next-auth/react";
+import { Button } from "@/components/ui/button";
 
 const choices = ["Piedra", "Papel", "Tijeras"];
 
@@ -14,6 +16,10 @@ export default function Page() {
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [winner, setWinner] = useState<string>("");
 
+  useEffect(() => {
+    updateScore(result);
+  }, [result]);
+
   const handleUserChoice = (choice: string): void => {
     if (gameOver) return;
 
@@ -24,7 +30,7 @@ export default function Page() {
     setComputerChoice(computerChoice);
     setResult(getResult(choice, computerChoice));
     console.log(result);
-    updateScore(result);
+    
     
   };
   // get result of round
@@ -120,10 +126,11 @@ export default function Page() {
       ) : (
         <div>
           <h2>Game Over!</h2>
-          <h3>{winner} Gana el juego!</h3>
+          <h3>{winner ==="Es un empate!" ? "Es un empate!": `${winner} Gana el juego!`}</h3>
           <button onClick={resetGame}>Jugar de nuevo</button>
         </div>
       )}
+      <Button variant="destructive" onClick={() => signOut({callbackUrl:'http://localhost:3000'})}>Sign Out</Button>
     </div>
   );
 }

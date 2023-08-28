@@ -10,6 +10,16 @@ interface RequestBody {
 export async function POST(request: Request) {
   const body: RequestBody = await request.json();
 
+  const userFound = await prismadb.user.findUnique({
+    where: { email: body.email }
+  })
+
+  if (userFound) {
+    return new Response(JSON.stringify({ error: "User already exists" }), {
+      status: 400,
+    });
+  }
+
   const user = await prismadb.user.create({
     data: {
       name: body.name,
