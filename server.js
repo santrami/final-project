@@ -20,6 +20,12 @@ httpServer.on('error', (error) => {
 
 io.on("connection", function (socket) {
     console.log("User ".concat(socket.id, " connected"));
+
+    // Listen for message
+    socket.on("message", function (data) {
+        io.emit("message", data);
+    });
+
     // Listen for 'choice' event from client
     socket.on("choice", function (data) {
         //console.log(data);
