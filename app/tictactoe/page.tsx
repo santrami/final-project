@@ -2,18 +2,6 @@
 
 import { useState } from "react";
 
-/*export default function Page()
-{
-  const [state, setState] = useState(0);
-
-  return(
-    <>
-      <button onClick={()=> setState((prevState)=> prevState + 1)}>{state}</button>
-      <button onClick={()=> setState(0)}>Reset</button>
-    </>
-  );
-}*/
-
 export default function Game()
 {
   const [squares, setSquares] = useState(Array(9).fill(null));
