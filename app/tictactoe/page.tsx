@@ -2,7 +2,31 @@
 
 import { useState } from "react";
 
-export default function Game()
+export default function Page(){
+  const [state, setState] = useState(0);
+  return(
+    <>
+      {state === 0 && <Choice setStateFunc={setState}></Choice> }
+      {state === 1 && <Game/>}
+    </>
+  );
+}
+
+function Choice({setStateFunc})
+{
+  return(
+    <>
+      <div>
+        <button onClick={()=>setStateFunc(1)}>Single Player</button>
+      </div>
+      <div>
+        <button onClick={()=>setStateFunc(2)}>Multi Player</button>
+      </div>
+    </>
+  );
+}
+
+function Game()
 {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [xTurn, setTurn] = useState(false);
