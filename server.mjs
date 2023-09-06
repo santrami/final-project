@@ -7,7 +7,7 @@ const io = new Server(server);
 io.on("connection", (socket) => {
     console.log("socket conected", socket.id);
   
-    socket.on("hello from client", ()=> console.log("hi"));
+    socket.on("hello from client", ()=> console.log(`client ${socket.id} says hi`));
   
     io.emit("hello from server");
   });
