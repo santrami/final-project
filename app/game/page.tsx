@@ -1,12 +1,9 @@
 "use client";
-import { FormEventHandler, useEffect, useState } from "react";
+import { FormEventHandler, useEffect, useState, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { io, Socket } from "socket.io-client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import Chat from "./Chat";
-import { data } from "autoprefixer";
+import ChatComponent from "./ChatComponent";
 
 export default function Page() {
   const { data: session } = useSession();
@@ -19,19 +16,37 @@ export default function Page() {
   const [round, setRound] = useState<number>(1);
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [winner, setWinner] = useState<string>("");
-  const [userName, setUserName] = useState("");
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<Data[]>([]);
+  const [room, setRoom] = useState<string>("");
+  const ref = useRef<HTMLDivElement>(null);
 
   type Data = {
     user: string;
     message: string;
+    room: string;
   };
+
+  const joinRoom = () => {
+    if (room !== "") {
+      socket?.emit("join-room",  room );
+    } 
+    console.log(room);
+    
+  };
+
   useEffect(() => {
     const socket = io("http://localhost:4000");
     setSocket(socket);
-    console.log("Is socket connected?", socket.connected);
 
+    socket.on("connect", () => {
+      console.log("connected");
+    });
+    socket.on("message", (data: Data) => {
+      console.log(data);
+      setMessages((prevMessages) => [...prevMessages, data]);      
+    });
+    
     socket.on("result", (data) => {
       setComputerChoice(data.opponentChoice);
       setResult(data.result);
@@ -39,24 +54,34 @@ export default function Page() {
       console.log(data);
     });
 
-    socket.on("message", (data: Data) => {
-      console.log(data);
-      setMessages((prevMessages) => [...prevMessages, data]);
-    });
 
     return () => {
       socket.close();
     };
-  }, [result]);
-
+  }, []);
+  
+  useEffect(() => {
+    if (messages.length) {
+      ref.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  }, [messages.length]);
+  
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    socket?.emit("message", { room, message, user: session?.user?.name });
+    setMessage("");
+    //setRoom("");
+  };
+  
   const handleUserChoice = (choice: string) => {
     if (gameOver) return;
-    console.log(choice);
-
+    //console.log(choice);
+    
     setUserChoice(choice);
     socket?.emit("choice", { choice, userId: session?.user?.id });
   };
 
+  
   const updateScore = (result: string) => {
     if (result === "Tú ganas!") {
       setUserScore((prevScore) => prevScore + 1);
@@ -98,14 +123,8 @@ export default function Page() {
     setWinner("");
   };
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    socket?.emit("message", { user: session?.user.name, message });
-    setMessage("");
-  };
-
   return (
-    <div>
+    <div className="">
       <h1>Piedra, Papel, Tijeras</h1>
       {!gameOver ? (
         <div>
@@ -155,33 +174,16 @@ export default function Page() {
           <button onClick={resetGame}>Jugar de nuevo</button>
         </div>
       )}
-      <div className="absolute bottom-2 right-4 w-1/3 h-90 bg-slate-600 overflow-hidden">
-        <ScrollArea className="h-[500px] w-auto p-4">
-          {messages.map((data, index) =>          
-            session?.user?.name === data.user ? (
-              <li className="list-none flex justify-end" key={index}>
-                <div className="bg-red-300 inline-flex rounded-lg p-3 m-2">
-                  <span className="flex text-yellow-100 left-auto">{data.user}</span>:{" "}
-                  {data.message}
-                </div>
-              </li>
-            ) : (
-              <li className="list-none" key={index}>
-                <div className="bg-orange-300 rounded-sm p-3 m-2 inline-block">
-                  <span className="text-yellow-100">{data.user}</span>:{" "}
-                  {data.message}
-                </div>
-              </li>
-            )
-          )}
-        </ScrollArea>
-        <Chat
-          handleSubmit={handleSubmit}
-          message={message}
-          setMessage={setMessage}
-          name={session?.user.name}
-        />
-      </div>
+      <ChatComponent
+        messages={messages}
+        session={session}
+        handleSubmit={handleSubmit}
+        message={message}
+        setMessage={setMessage}
+        room={room}
+        setRoom={setRoom}
+        joinRoom={joinRoom}
+      />
       <Button
         variant="destructive"
         onClick={() => signOut({ callbackUrl: "http://localhost:3000" })}

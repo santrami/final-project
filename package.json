@@ -7,7 +7,7 @@
     "start": "next start",
     "lint": "next lint",
     "build": "next build",
-    "server": "ts-node server.ts"
+    "server": "tsc server.ts && node server.js"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",

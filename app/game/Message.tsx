@@ -1,13 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dispatch, FormEventHandler } from "react";
-import { useSession } from "next-auth/react";
 
 type ChatProps = {
   name?: string;
   handleSubmit: FormEventHandler<HTMLFormElement>;
   message: string;
   setMessage: Dispatch<React.SetStateAction<string>>;
+  room: string;
+  joinRoom: () => void;
+  setRoom: Dispatch<React.SetStateAction<string>>;
 };
 
 const Chat: React.FC<ChatProps> = ({
@@ -15,8 +17,10 @@ const Chat: React.FC<ChatProps> = ({
   message,
   setMessage,
   name,
+  room, joinRoom, setRoom
 }) => {
   return (
+    <>
     <form onSubmit={handleSubmit}>
       <Input
         type="text"
@@ -29,8 +33,20 @@ const Chat: React.FC<ChatProps> = ({
           setMessage(e.target.value);
         }}
       />
-      <Button variant="default">Enviar</Button>
+      <Button variant="default">Enviar</Button>      
     </form>
+    <Input
+        type="text"
+        placeholder="elije una sala"
+        name="room"
+        id="room"
+        value={room}
+        onChange={(e) => {
+          setRoom(e.target.value);
+        }}
+      />
+      <Button onClick={joinRoom} variant="default">Entrar</Button>
+    </>
   );
 };
 
