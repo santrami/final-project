@@ -11,7 +11,7 @@ export default function Game()
 
   function clickCell(idx:number)
   {
-    if(xWinner || oWinner)
+    if(xWinner || oWinner || squares[idx] !== null)
       return;
     const currSquares = squares.slice();
     (xTurn) ? currSquares[idx] = "X" : currSquares[idx] = "O";
