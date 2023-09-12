@@ -58,12 +58,6 @@ export default function Game()
     oSetWinner(false);
   }
 
-  function restartEmit()
-  {
-    socket.emit("send_restart_tictactoe");
-    console.log("GOGOGGOGOGGOGO!!!!1");
-  }
-
   return(
     (conState) ? 
     (<>
@@ -71,7 +65,7 @@ export default function Game()
       {(xWinner) && <p>X won</p>}
       {(oWinner) && <p>O won</p>}
       <Board squares={squares.slice()} clickCell={clickCell}></Board>
-      <button onClick={restartEmit}>Restart</button>
+      <button onClick={()=>socket.emit("send_restart_tictactoe")}>Restart</button>
     </>) 
     : <h1>Connecting</h1>
   );
