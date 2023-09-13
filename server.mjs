@@ -8,21 +8,26 @@ const io = new Server(server, {
       methods: ["GET", "POST"]
     }
   });
-let num = 0;
-let roomName = "room 0";
+
+let waitingSocket = null;
 
 io.on("connection", (socket) => {
     console.log("socket conected", socket.id);
-    socket.join(roomName);
-    if((++num)%2 === 0)
-    {
-        //like this it excludes itself to receive the emit and sends to all other members of the room
-        //socket.to(`room ${num-2}`).emit("start_tictactoe");
-        io.to(`room ${num-2}`).emit("start_tictactoe");
-        console.log(`SENDED START GAME!!!! room ${num-2}`);
-        roomName = "room " + num;
-    }
-    socket.on("send_restart_tictactoe", () => {io.to(`room ${num-2}`).emit("restart_tictactoe");});
+    socket.on("give_room", () => {
+        if(waitingSocket === null)
+            waitingSocket = socket
+        else {
+            let num = "";
+            for(let x = 0; x < 20; ++x)
+                num += Math.floor(Math.random()*10).toString();
+            waitingSocket.join(num);
+            socket.join(num);
+            waitingSocket.to(num).emit("start_tictactoe", {room: num, player: "X"});
+            socket.to(num).emit("start_tictactoe", {room: num, player: "O"});
+            waitingSocket = null;
+        }
+    });
+    socket.on("send_restart_tictactoe", room => io.to(room).emit("restart_tictactoe"));
 });
 
-server.listen(4001, ()=> console.log("Server initialized on port 4001"));
+server.listen(4001, () => console.log("Server initialized on port 4001"));

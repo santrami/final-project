@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 
 const socket = io("http://localhost:4001");
 //const socket = io("http://localhost:4001").connect();
+let gameRoom = 0;
+let player = "";
 
 export default function Game()
 {
@@ -13,9 +15,18 @@ export default function Game()
   const [oWinner, oSetWinner] = useState(false);
 
   const [conState, setConState] = useState(false);
-  useEffect(()=>{
-    socket.on("start_tictactoe", () => setConState(true));
-    socket.on("restart_tictactoe", ()=>{restart();});
+  useEffect(() => {
+    //events que nomes emitim al principi de tot (no tornar a emetre al reconectar)
+    socket.emit("give_room");
+  }, []);
+  useEffect(() => {
+    socket.on("start_tictactoe", obj => {
+      gameRoom = obj.room;
+      player = obj.player; 
+      setConState(true);
+      console.log("RECEIVED");
+     })
+    socket.on("restart_tictactoe", () => { restart(); });
   }, [socket]);
 
   function clickCell(idx:number)
@@ -61,11 +72,12 @@ export default function Game()
   return(
     (conState) ? 
     (<>
+      <h1>You are {player}</h1>
       {(!(xWinner || oWinner)) && <p>Its {(xTurn)? 'X': 'O'} turn</p>}
       {(xWinner) && <p>X won</p>}
       {(oWinner) && <p>O won</p>}
       <Board squares={squares.slice()} clickCell={clickCell}></Board>
-      <button onClick={()=>socket.emit("send_restart_tictactoe")}>Restart</button>
+      <button onClick={()=>socket.emit("send_restart_tictactoe", gameRoom)}>Restart</button>
     </>) 
     : <h1>Connecting</h1>
   );
