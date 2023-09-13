@@ -6,11 +6,12 @@ const socket = io("http://localhost:4001");
 //const socket = io("http://localhost:4001").connect();
 let gameRoom = 0;
 let player = "";
+let blocked = false;
 
 export default function Game()
 {
   const [squares, setSquares] = useState(Array(9).fill(null));
-  const [xTurn, setTurn] = useState(false);
+  const [turn, setTurn] = useState("");
   const [xWinner, xSetWinner] = useState(false);
   const [oWinner, oSetWinner] = useState(false);
 
@@ -20,32 +21,40 @@ export default function Game()
     socket.emit("give_room");
   }, []);
   useEffect(() => {
+
     socket.on("start_tictactoe", obj => {
       gameRoom = obj.room;
       player = obj.player; 
       setConState(true);
-      console.log("RECEIVED");
+      setTurn(obj.start);
      })
+
     socket.on("restart_tictactoe", () => { restart(); });
+
+    socket.on("play_turn", obj => {
+      setTurn( prev => (prev === "X") ? "O" : "X");
+      setSquares( prev => {
+        const curr = prev.slice();
+        curr[obj.idx] = obj.player;
+        return curr;
+      });
+      blocked = false;
+    })
   }, [socket]);
+
+  useEffect(() => {
+    if(checkWinner(squares, "X"))
+      xSetWinner(true);
+    else if(checkWinner(squares, "O"))
+      oSetWinner(true);
+  }, [squares])
 
   function clickCell(idx:number)
   {
-    if(xWinner || oWinner || squares[idx] !== null)
+    if(xWinner || oWinner || squares[idx] !== null || turn !== player || blocked)
       return;
-    //const socket = io("http://localhost:4001");
-    //socket.emit("turn_play", idx);
-    const currSquares = squares.slice();
-    (xTurn) ? currSquares[idx] = "X" : currSquares[idx] = "O";
-    if (currSquares[idx] !== squares[idx])
-    {
-      setTurn((prev)=> !prev);
-      setSquares(currSquares);
-      if(checkWinner(currSquares, "X"))
-        xSetWinner(true);
-      else if(checkWinner(currSquares, "O"))
-        oSetWinner(true);
-    }
+    socket.emit("turn_play", {room: gameRoom, idx, player});
+    blocked = true;
   }
 
   function checkWinner(squares:Array<string>, sym: string)
@@ -73,7 +82,7 @@ export default function Game()
     (conState) ? 
     (<>
       <h1>You are {player}</h1>
-      {(!(xWinner || oWinner)) && <p>Its {(xTurn)? 'X': 'O'} turn</p>}
+      {(!(xWinner || oWinner)) && <p>Its {turn} turn</p>}
       {(xWinner) && <p>X won</p>}
       {(oWinner) && <p>O won</p>}
       <Board squares={squares.slice()} clickCell={clickCell}></Board>

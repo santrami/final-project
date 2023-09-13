@@ -10,7 +10,7 @@ export default function Page() {
           <Link href={"/tictactoe/sGame"}>Multi Player</Link>
         </div>*/}
       <div>
-        <Link href={"/tictactoe/connect"}>Connect</Link>
+        <Link href={"/tictactoe/mGame"}>Multi Player</Link>
       </div>
     </>
   );

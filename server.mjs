@@ -22,12 +22,16 @@ io.on("connection", (socket) => {
                 num += Math.floor(Math.random()*10).toString();
             waitingSocket.join(num);
             socket.join(num);
-            waitingSocket.to(num).emit("start_tictactoe", {room: num, player: "X"});
-            socket.to(num).emit("start_tictactoe", {room: num, player: "O"});
+            const start = (Math.round(Math.random())) ? "X" : "O";
+            waitingSocket.to(num).emit("start_tictactoe", {room: num, player: "X", start});
+            socket.to(num).emit("start_tictactoe", {room: num, player: "O", start});
             waitingSocket = null;
         }
     });
     socket.on("send_restart_tictactoe", room => io.to(room).emit("restart_tictactoe"));
+    socket.on("turn_play", obj => {
+        io.to(obj.room).emit("play_turn", {idx: obj.idx, player: obj.player})
+    });
 });
 
 server.listen(4001, () => console.log("Server initialized on port 4001"));
