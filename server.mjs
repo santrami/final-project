@@ -15,7 +15,7 @@ io.on("connection", (socket) => {
     console.log("socket conected", socket.id);
     socket.on("give_room", () => {
         if(waitingSocket === null)
-            waitingSocket = socket
+            waitingSocket = socket;
         else {
             let num = "";
             for(let x = 0; x < 20; ++x)
