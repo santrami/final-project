@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 const socket = io("http://localhost:4001");
 //const socket = io("http://localhost:4001").connect();
-let gameRoom = 0;
+let gameRoom = "";
 let player = "";
 let blocked = false;
 
