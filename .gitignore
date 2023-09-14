@@ -1,5 +1,13 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+
+# NextJs and Socket IO Server not working full
+/pages
+/types
+/app/temp
+/app/api/socket
+
+
 # dependencies
 /node_modules
 /.pnp
