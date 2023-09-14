@@ -28,7 +28,7 @@ export default function Page() {
       </div>
       <h1 className="text-4xl text-amber-200">Juega ahora!</h1>
       <div className="flex justify-center items-center gap-10 p-5">
-        <Link href={session ? "/game" :"/api/auth/signin"}>
+        <Link href={session ? "/game" : "/api/auth/signin"}>
           <Image
             alt="piedra, papel y tijeras"
             src="/piedra-papel-tijeras.jpg"
@@ -36,12 +36,14 @@ export default function Page() {
             height={200}
           />
         </Link>
-        <Image
-          alt="piedra, papel y tijeras"
-          src="/tres-en-raya.png"
-          width={200}
-          height={200}
-        />
+        <Link href={session ? "/tictactoe" : "/api/auth/signin"}>
+          <Image
+            alt="piedra, papel y tijeras"
+            src="/tres-en-raya.png"
+            width={200}
+            height={200}
+          />
+        </Link>
       </div>
     </div>
   );

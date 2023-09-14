@@ -1,6 +1,8 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
 import Image from "next/image";
+import { redirect } from "next/dist/server/api-utils";
+import Link from "next/link";
 
 function SigninButton() {
   const { data: session } = useSession();
@@ -27,11 +29,21 @@ function SigninButton() {
   }
 
   return (
-    <Button onClick={async () => await signIn('undefined', {
-      callbackUrl: 'http://localhost:3000/game'
-    })} variant="default">
-      Sign In
-    </Button>
+    <>
+      <Button
+        onClick={async () =>
+          await signIn("undefined", {
+            callbackUrl: "http://localhost:3000/game",
+          })
+        }
+        variant="default"
+      >
+        Sign In
+      </Button>
+      <Link href="/register">
+        <Button>Register</Button>
+      </Link>
+    </>
   );
 }
 

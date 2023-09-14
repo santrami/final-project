@@ -1,7 +1,6 @@
 import { signJwtAccessToken } from "@/lib/jwt";
 import prismadb from "@/lib/prismadb";
 import * as bcrypt from "bcrypt";
-import { NextResponse } from "next/server";
 
 interface RequestBody{
     username:string;
