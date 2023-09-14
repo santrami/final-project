@@ -8,9 +8,6 @@ function SigninButton() {
   //console.log(session)
 
   if (session && session.user) {
-    {
-      console.log(session);
-    }
     return (
       <div className="flex gap-6 items-center">
         <div className="flex gap-3">
