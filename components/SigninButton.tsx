@@ -1,7 +1,5 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
-import Image from "next/image";
-import { redirect } from "next/dist/server/api-utils";
 import Link from "next/link";
 
 function SigninButton() {
