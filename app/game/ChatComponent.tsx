@@ -45,7 +45,7 @@ function ChatComponent({ messages, session, message, room, joinRoom, setRoom, ha
   return (
     <div
       id="chat"
-      className="fixed bottom-2 right-4 w-1/3 md:w-1/2 sm:w-4/5 bg-slate-800 overflow-hidden h-[90vh]"
+      className="absolute flex flex-col bottom-0 right-0 w-1/3 md:w-1/2 sm:w-4/5 bg-slate-800 overflow-hidden h-[90vh]"
     >
       <div
         className="flex justify-end h-50 p-5 m-0 bg-slate-950 cursor-pointer"

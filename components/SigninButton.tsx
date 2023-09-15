@@ -1,6 +1,6 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
-import Image from "next/image";
+import Link from "next/link";
 
 function SigninButton() {
   const { data: session } = useSession();
@@ -8,9 +8,6 @@ function SigninButton() {
   //console.log(session)
 
   if (session && session.user) {
-    {
-      console.log(session);
-    }
     return (
       <div className="flex gap-6 items-center">
         <div className="flex gap-3">
@@ -30,11 +27,21 @@ function SigninButton() {
   }
 
   return (
-    <Button onClick={async () => await signIn('undefined', {
-      callbackUrl: 'http://localhost:3000/game'
-    })} variant="default">
-      Sign In
-    </Button>
+    <>
+      <Button
+        onClick={async () =>
+          await signIn("undefined", {
+            callbackUrl: "http://localhost:3000/game",
+          })
+        }
+        variant="default"
+      >
+        Sign In
+      </Button>
+      <Link href="/register">
+        <Button>Register</Button>
+      </Link>
+    </>
   );
 }
 

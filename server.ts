@@ -21,6 +21,7 @@ io.on("connect_error", (error) => {
 
 // Listen for new connections
 
+let choices:string[]= [];
 //SOCKET IO ON CONNECTION
 io.on("connection", (socket) => {
   console.log(`User ${socket.id} connected`);
@@ -39,34 +40,53 @@ io.on("connection", (socket) => {
     }
   });
 
+  const getResult = function (
+    playerChoice: string,
+    opponentChoice: string
+  ): string {
+    if (playerChoice === opponentChoice) return "Es un empate!";
+    if (
+      (playerChoice === "Piedra" && opponentChoice === "Tijeras") ||
+      (playerChoice === "Tijeras" && opponentChoice === "Papel") ||
+      (playerChoice === "Papel" && opponentChoice === "Piedra")
+    ) {
+      return "Tú ganas!";
+    }
+    return "Computadora gana!";
+  };
+
   // Listen for 'choice' event from client
-  socket.on("choice", function (data) {
+  socket.on("choice", function (data: { choice: string; userId: string }) {
     const { choice, userId } = data;
-    console.log(choice, userId);
+    //console.log(choice, userId);
 
-    const getResult = function (
-      playerChoice: string,
-      opponentChoice: string
-    ): string {
-      if (playerChoice === opponentChoice) return "Es un empate!";
-      if (
-        (playerChoice === "Piedra" && opponentChoice === "Tijeras") ||
-        (playerChoice === "Tijeras" && opponentChoice === "Papel") ||
-        (playerChoice === "Papel" && opponentChoice === "Piedra")
-      ) {
-        return "Tú ganas!";
-      }
-      return "Computadora gana!";
-    };
+    choices.push(choice);
+    console.log(choices);
+    let result:string = "";
+    
+    if(choices.length > 1){
+      const choice = choices[0];
+      const opponentChoice= choices[1];
 
-    const choices = ["Piedra", "Papel", "Tijeras"];
+       result = getResult(choices[0], choices[1]);
+       //io.emit("result", { opponentChoice, choice, result });
+        socket.emit("result", { opponentChoice, choice, result });
+        choices=[];
+    }else{
+      io.emit("waitingForPlayer", {message: "Esperando a otro jugador"});
+    }
+    /* const choices = ["Piedra", "Papel", "Tijeras"];
     const randomIndex = Math.floor(Math.random() * choices.length);
-    const opponentChoice = choices[randomIndex];
-    const result = getResult(choice, opponentChoice);
+    const opponentChoice = choices[randomIndex]; */
+    
+
+    //console.log(choice);
+
 
     // Generate computer's choice and result
     // Emit 'result' event to client
-    socket.emit("result", { opponentChoice, choice, result });
+    
+    
   });
 
   socket.on("disconnect", function () {
