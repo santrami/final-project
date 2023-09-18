@@ -7,20 +7,16 @@ import ChatComponent from "./ChatComponent";
 import Image from "next/image";
 import { RefreshCw } from "lucide-react";
 
-let socket = io("http://localhost:4000");
+let socket = io("http://localhost:4005");
 let gameRoom = "";
 
-let choiceMade = "";
+let playerChoice = "";
 let rivalChoice = "";
+let playerWon = true;
+let choiceBlocked = false;
 
 export default function Page() {
   const { data: session } = useSession();
-  const [userChoice, setUserChoice] = useState<string>("");
-  const [oponnetChoice, setOponnetChoice] = useState<string>("");
-  const [result, setResult] = useState<string>("");
-  const [userScore, setUserScore] = useState<number>(0);
-  const [opponentScore, setOpponentScore] = useState<number>(0);
-  const [round, setRound] = useState<number>(1);
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [winner, setWinner] = useState<string>("");
   const [message, setMessage] = useState<string>("");
@@ -28,10 +24,16 @@ export default function Page() {
   const [room, setRoom] = useState<string>("");
   const ref = useRef<HTMLDivElement>(null);
 
-
+  const [userChoice, setUserChoice] = useState("");
+  const [opponetChoice, setOpponentChoice] = useState("");
+  const [result, setResult] = useState("");
+  const [userScore, setUserScore] = useState(0);
+  const [opponentScore, setOpponentScore] = useState(0);
+  const [round, setRound] = useState(1);
+  const [nextRound, setNextRound] = useState(false);
   const [conState, setConState] = useState(false);
 
-  type Data = {
+  /*type Data = {
     user: string;
     message: string;
     room: string;
@@ -42,7 +44,7 @@ export default function Page() {
       socket?.emit("join-room", room);
     }
     console.log(room);
-  };
+  };*/
 
   useEffect(() => {
     //events que nomes emitim al principi de tot (no tornar a emetre al reconectar)
@@ -55,29 +57,19 @@ export default function Page() {
       setConState(true);
     });
 
-    socket.on("turn_play_rps", obj =>{
-      if(choiceMade !== "")
+    socket.on("play_turn_rps", obj =>{
+      if(playerChoice !== "")
         roundResult();
       else
         rivalChoice = obj.choice;
     })
 
-    socket.on("restart_tictactoe", () => {
+    /*socket.on("restart_rps", () => {
       restart();
-    });
-
-    socket.on("play_turn", (obj) => {
-      setTurn((prev) => (prev === "X" ? "O" : "X"));
-      setSquares((prev) => {
-        const curr = prev.slice();
-        curr[obj.idx] = obj.player;
-        return curr;
-      });
-      blocked = false;
-    });
+    });*/
   }, [socket]);
   
-  useEffect(() => {
+  /*useEffect(() => {
 
     //testing socket connection
     socket.on("connect", () => {
@@ -96,7 +88,7 @@ export default function Page() {
     socket.on("result", (data) => {
       //setOponnetChoice(data.opponentChoice);
       setUserChoice(data.choice);
-      setOponnetChoice(data.opponentChoice);
+      setOpponentChoice(data.opponentChoice);
       setResult(data.result);
       updateScore(data.result);
       console.log(data);
@@ -118,21 +110,51 @@ export default function Page() {
     socket?.emit("message", { room, message, user: session?.user?.name });
     setMessage("");
     //setRoom("");
-  };
+  };*/
 
   const handleUserChoice = () => {
-    if (gameOver || userChoice === "") 
+    if (userChoice === "" || choiceBlocked) 
       return;
     socket.emit("choice_rps", { userChoice, room: gameRoom });
-    choiceMade = userChoice;
+    playerChoice = userChoice;
+    choiceBlocked = true;
     if(rivalChoice !== "")
-      CalculateTurn
+      roundResult();
   };
 
   function roundResult(){
-    calculate round result
-    tornar a posar el choice made a ""
-    tornar a posar el rival choice a ""
+    setOpponentChoice(rivalChoice);
+    if (leftWon(playerChoice, rivalChoice))
+    {
+      setUserScore(prevScore => prevScore + 1);
+      playerWon = true;
+    }
+    else if (leftWon(rivalChoice, playerChoice))
+    {
+      setOpponentScore(prevScore => prevScore + 1);
+      playerWon = false;
+    }
+    setNextRound(true);
+  }
+
+  function leftWon(left: string, right: string): boolean {
+    if(left === "Papel" && right === "Piedra")
+      return true;
+      if(left === "Piedra" && right === "Tijeras")
+      return true;
+      if(left === "Tijeras" && right === "Papel")
+      return true;
+    return false;
+  }
+
+  function goNextRound(){
+    setNextRound(true);
+    setOpponentChoice("");
+    setUserChoice("");
+    setRound(prev => prev + 1);
+    playerChoice = "";
+    rivalChoice = "";
+    choiceBlocked = false;
   }
 
 /*   const handleUser2Choice = (choice: string) => {
@@ -143,7 +165,7 @@ export default function Page() {
     socket?.emit("choice", { choice, userId: session?.user?.id });
   }; */
 
-  const updateScore = (result: string) => {
+  /*const updateScore = (result: string) => {
     if (result === "Tú ganas!") {
       setUserScore((prevScore) => prevScore + 1);
     } else if (result === "Computadora gana!") {
@@ -154,7 +176,7 @@ export default function Page() {
   const handleNextRound = (): void => {
     if (round < 3) {
       setUserChoice("");
-      setOponnetChoice("");
+      setOpponentChoice("");
       setResult("");
       setRound((prevRound) => prevRound + 1);
     } else {
@@ -175,21 +197,20 @@ export default function Page() {
 
   const resetGame = (): void => {
     setUserChoice("");
-    setOponnetChoice("");
+    setOpponentChoice("");
     setResult("");
     setUserScore(0);
     setOpponentScore(0);
     setRound(1);
     setGameOver(false);
     setWinner("");
-  };
+  };*/
 
   return (conState /*&& session*/) ? (
     <div className="flex flex-col">
       <h1 className="text-center mx-auto font-sans text-3xl p-5 bg-slate-200 w-full">
         Piedra, Papel y Tijeras
       </h1>
-      {!gameOver ? (
         <div className="container bg-slate-400">
           <div className="flex justify-evenly">
             <div className="">
@@ -210,7 +231,7 @@ export default function Page() {
                 className=""
                 priority 
                 alt="election"
-                src={oponnetChoice ? `/${oponnetChoice}.png` : "/question.png"}
+                src={opponetChoice ? `/${opponetChoice}.png` : "/question.png"}
                 width="200"
                 height="300"
               />
@@ -224,7 +245,7 @@ export default function Page() {
           </div>
           <div className="">Haz tu elección</div>
           <div className="flex items-center justify-center gap-9">
-            <Button className="hover:bg-transparent hover:scale-125 transition-all" variant="ghost" onClick={() => setUserChoice("Piedra")}>
+            <Button className="hover:bg-transparent hover:scale-125 transition-all" variant="ghost" onClick={() => {if (!choiceBlocked) setUserChoice("Piedra")}}>
               <Image
                 className=""
                 alt="piedra"
@@ -233,7 +254,7 @@ export default function Page() {
                 height="100"
               />
             </Button>
-            <Button className="hover:bg-transparent hover:scale-125 transition-all" variant="ghost" onClick={() => setUserChoice("Papel")}>
+            <Button className="hover:bg-transparent hover:scale-125 transition-all" variant="ghost" onClick={() => {if (!choiceBlocked) setUserChoice("Papel")}}>
               <Image
                 className=""
                 alt="papel"
@@ -242,7 +263,7 @@ export default function Page() {
                 height="100"
               />
             </Button>
-            <Button className="hover:bg-transparent hover:scale-125 transition-all" variant="ghost" onClick={() => setUserChoice("Tijeras")}>
+            <Button className="hover:bg-transparent hover:scale-125 transition-all" variant="ghost" onClick={() => {if (!choiceBlocked) setUserChoice("Tijeras")}}>
               <Image
                 className=""
                 alt="tijeras"
@@ -252,45 +273,10 @@ export default function Page() {
               />
             </Button>
             <Button onClick={() => handleUserChoice()}>Send choice</Button>
+            {nextRound && <Button onClick={() => goNextRound()}>{(playerWon) ? "You won" : "You lost"}</Button>}
           </div>
-          {result && (
-            <div>
-              <h2>Tu elección: {userChoice}</h2>
-              <h2>Elección de la computadora: {oponnetChoice}</h2>
-              <h2>Resultado: {result}</h2>
-              <div className="bg-slate-400">
-                <h2>acumulado</h2>
-                <h3>Computadora: {opponentScore}</h3>
-                <h3>Usuario: {userScore}</h3>
-              </div>
-            </div>
-          )}
 
-          {round < 4 && (
-            <button onClick={handleNextRound}>Siguiente Ronda</button>
-          )}
         </div>
-      ) : (
-        <div>
-          <h2>Game Over!</h2>
-          <h3>
-            {winner === "Es un empate!"
-              ? "Es un empate!"
-              : `${winner} Gana el juego!`}
-          </h3>
-          <button onClick={resetGame}>Jugar de nuevo</button>
-        </div>
-      )}
-      <ChatComponent
-        messages={messages}
-        session={session}
-        handleSubmit={handleSubmit}
-        message={message}
-        setMessage={setMessage}
-        room={room}
-        setRoom={setRoom}
-        joinRoom={joinRoom}
-      />
     </div>
   ) : (
   <div className="flex flex-col">
