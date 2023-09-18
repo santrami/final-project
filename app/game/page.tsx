@@ -10,6 +10,9 @@ import { RefreshCw } from "lucide-react";
 let socket = io("http://localhost:4000");
 let gameRoom = "";
 
+let choiceMade = "";
+let rivalChoice = "";
+
 export default function Page() {
   const { data: session } = useSession();
   const [userChoice, setUserChoice] = useState<string>("");
@@ -47,10 +50,17 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    socket.on("start_rps", (obj) => {
+    socket.on("start_rps", obj => {
       gameRoom = obj.room;
       setConState(true);
     });
+
+    socket.on("turn_play_rps", obj =>{
+      if(choiceMade !== "")
+        roundResult();
+      else
+        rivalChoice = obj.choice;
+    })
 
     socket.on("restart_tictactoe", () => {
       restart();
@@ -110,13 +120,20 @@ export default function Page() {
     //setRoom("");
   };
 
-  const handleUserChoice = (choice: string) => {
-    if (gameOver) return;
-    //console.log(choice);
-
-    setUserChoice(choice);
-    socket.emit("choice_rps", { choice, room: gameRoom });
+  const handleUserChoice = () => {
+    if (gameOver || userChoice === "") 
+      return;
+    socket.emit("choice_rps", { userChoice, room: gameRoom });
+    choiceMade = userChoice;
+    if(rivalChoice !== "")
+      CalculateTurn
   };
+
+  function roundResult(){
+    calculate round result
+    tornar a posar el choice made a ""
+    tornar a posar el rival choice a ""
+  }
 
 /*   const handleUser2Choice = (choice: string) => {
     if (gameOver) return;
@@ -207,7 +224,7 @@ export default function Page() {
           </div>
           <div className="">Haz tu elección</div>
           <div className="flex items-center justify-center gap-9">
-            <Button className="hover:bg-transparent hover:scale-125 transition-all" variant="ghost" onClick={() => handleUserChoice("Piedra")}>
+            <Button className="hover:bg-transparent hover:scale-125 transition-all" variant="ghost" onClick={() => setUserChoice("Piedra")}>
               <Image
                 className=""
                 alt="piedra"
@@ -216,7 +233,7 @@ export default function Page() {
                 height="100"
               />
             </Button>
-            <Button className="hover:bg-transparent hover:scale-125 transition-all" variant="ghost" onClick={() => handleUserChoice("Papel")}>
+            <Button className="hover:bg-transparent hover:scale-125 transition-all" variant="ghost" onClick={() => setUserChoice("Papel")}>
               <Image
                 className=""
                 alt="papel"
@@ -225,7 +242,7 @@ export default function Page() {
                 height="100"
               />
             </Button>
-            <Button className="hover:bg-transparent hover:scale-125 transition-all" variant="ghost" onClick={() => handleUserChoice("Tijeras")}>
+            <Button className="hover:bg-transparent hover:scale-125 transition-all" variant="ghost" onClick={() => setUserChoice("Tijeras")}>
               <Image
                 className=""
                 alt="tijeras"
@@ -234,7 +251,7 @@ export default function Page() {
                 height="100"
               />
             </Button>
-            <Button onClick={() => handleUserChoice("Tijeras")}>Send choice</Button>
+            <Button onClick={() => handleUserChoice()}>Send choice</Button>
           </div>
           {result && (
             <div>
