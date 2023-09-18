@@ -13,7 +13,7 @@ let waitingSocket = null;
 
 io.on("connection", (socket) => {
     console.log("socket conected", socket.id);
-    socket.on("give_room", () => {
+    socket.on("give_room_tictactoe", () => {
         if(waitingSocket === null)
             waitingSocket = socket;
         else {

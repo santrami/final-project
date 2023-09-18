@@ -5,10 +5,13 @@ import { io, Socket } from "socket.io-client";
 import { Button } from "@/components/ui/button";
 import ChatComponent from "./ChatComponent";
 import Image from "next/image";
+import { RefreshCw } from "lucide-react";
+
+let socket = io("http://localhost:4000");
+let gameRoom = "";
 
 export default function Page() {
   const { data: session } = useSession();
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [userChoice, setUserChoice] = useState<string>("");
   const [oponnetChoice, setOponnetChoice] = useState<string>("");
   const [result, setResult] = useState<string>("");
@@ -21,6 +24,9 @@ export default function Page() {
   const [messages, setMessages] = useState<Data[]>([]);
   const [room, setRoom] = useState<string>("");
   const ref = useRef<HTMLDivElement>(null);
+
+
+  const [conState, setConState] = useState(false);
 
   type Data = {
     user: string;
@@ -36,8 +42,32 @@ export default function Page() {
   };
 
   useEffect(() => {
-    const socket = io("http://localhost:4000");
-    setSocket(socket);
+    //events que nomes emitim al principi de tot (no tornar a emetre al reconectar)
+    socket.emit("give_room_rps");
+  }, []);
+
+  useEffect(() => {
+    socket.on("start_rps", (obj) => {
+      gameRoom = obj.room;
+      setConState(true);
+    });
+
+    socket.on("restart_tictactoe", () => {
+      restart();
+    });
+
+    socket.on("play_turn", (obj) => {
+      setTurn((prev) => (prev === "X" ? "O" : "X"));
+      setSquares((prev) => {
+        const curr = prev.slice();
+        curr[obj.idx] = obj.player;
+        return curr;
+      });
+      blocked = false;
+    });
+  }, [socket]);
+  
+  useEffect(() => {
 
     //testing socket connection
     socket.on("connect", () => {
@@ -85,7 +115,7 @@ export default function Page() {
     //console.log(choice);
 
     setUserChoice(choice);
-    socket?.emit("choice", { choice, userId: session?.user?.id });
+    socket.emit("choice_rps", { choice, room: gameRoom });
   };
 
 /*   const handleUser2Choice = (choice: string) => {
@@ -137,7 +167,7 @@ export default function Page() {
     setWinner("");
   };
 
-  return (
+  return (conState /*&& session*/) ? (
     <div className="flex flex-col">
       <h1 className="text-center mx-auto font-sans text-3xl p-5 bg-slate-200 w-full">
         Piedra, Papel y Tijeras
@@ -204,6 +234,7 @@ export default function Page() {
                 height="100"
               />
             </Button>
+            <Button onClick={() => handleUserChoice("Tijeras")}>Send choice</Button>
           </div>
           {result && (
             <div>
@@ -244,5 +275,10 @@ export default function Page() {
         joinRoom={joinRoom}
       />
     </div>
+  ) : (
+  <div className="flex flex-col">
+    <p className="self-center text-2xl text-slate-200">Esperando oponente</p>
+    <RefreshCw size={30} className="self-center text-7xl text-slate-200 animate-spin" />
+  </div>
   );
 }
