@@ -21,7 +21,7 @@ export default function Game() {
   const [conState, setConState] = useState(false);
   useEffect(() => {
     //events que nomes emitim al principi de tot (no tornar a emetre al reconectar)
-    socket.emit("give_room");
+    socket.emit("give_room_tictactoe");
   }, []);
   useEffect(() => {
     socket.on("start_tictactoe", (obj) => {
