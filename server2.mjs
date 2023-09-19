@@ -41,7 +41,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("choice_rps", obj =>{
-    socket.to(obj.room).emit("play_turn_rps", {choice: obj.choice});
+    socket.to(obj.room).emit("play_turn_rps", {choice: obj.userChoice});
   });
 
 });
