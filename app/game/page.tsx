@@ -23,10 +23,10 @@ export default function Page() {
   const [messages, setMessages] = useState<Data[]>([]);
   const [room, setRoom] = useState<string>("");
   const ref = useRef<HTMLDivElement>(null);
+  const [result, setResult] = useState("");
 
   const [userChoice, setUserChoice] = useState("");
   const [opponetChoice, setOpponentChoice] = useState("");
-  const [result, setResult] = useState("");
   const [userScore, setUserScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
   const [round, setRound] = useState(1);
@@ -148,7 +148,7 @@ export default function Page() {
   }
 
   function goNextRound(){
-    setNextRound(true);
+    setNextRound(false);
     setOpponentChoice("");
     setUserChoice("");
     setRound(prev => prev + 1);
