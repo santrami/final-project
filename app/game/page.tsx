@@ -12,7 +12,7 @@ let gameRoom = "";
 
 let playerChoice = "";
 let rivalChoice = "";
-let playerWon = true;
+let playerResult = 0;
 let choiceBlocked = false;
 
 export default function Page() {
@@ -58,10 +58,9 @@ export default function Page() {
     });
 
     socket.on("play_turn_rps", obj =>{
+      rivalChoice = obj.choice;
       if(playerChoice !== "")
         roundResult();
-      else
-        rivalChoice = obj.choice;
     })
 
     /*socket.on("restart_rps", () => {
@@ -123,17 +122,21 @@ export default function Page() {
   };
 
   function roundResult(){
+    console.log(playerChoice);
+    console.log(rivalChoice);
     setOpponentChoice(rivalChoice);
     if (leftWon(playerChoice, rivalChoice))
     {
       setUserScore(prevScore => prevScore + 1);
-      playerWon = true;
+      playerResult = 2;
     }
     else if (leftWon(rivalChoice, playerChoice))
     {
       setOpponentScore(prevScore => prevScore + 1);
-      playerWon = false;
+      playerResult = 0;
     }
+    else
+      playerResult = 1;
     setNextRound(true);
   }
 
@@ -273,7 +276,11 @@ export default function Page() {
               />
             </Button>
             <Button onClick={() => handleUserChoice()}>Send choice</Button>
-            {nextRound && <Button onClick={() => goNextRound()}>{(playerWon) ? "You won" : "You lost"}</Button>}
+            {nextRound && <Button onClick={() => goNextRound()}>
+              {(playerResult === 0) && "You Lost"}
+              {(playerResult === 1) && "Tie"}
+              {(playerResult === 2) && "You win"}
+              </Button>}
           </div>
 
         </div>
