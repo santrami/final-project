@@ -1,5 +1,5 @@
 export {default} from "next-auth/middleware"
 
 export const config = {
-    matcher: ["/tictactoe/:path*"]
+    matcher: ["/tictactoe/sGame:path*"]
 }

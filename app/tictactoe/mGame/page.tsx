@@ -91,7 +91,7 @@ export default function Game() {
     oSetWinner(false);
   }
 
-  return conState && session ? (
+return conState /*&& session*/ ? (
     <div className="flex flex-col">
       {!(xWinner || oWinner) && (
         <p className="self-center text-gray-50 text-2xl mb-5">

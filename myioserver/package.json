@@ -1,0 +1,11 @@
+{
+    "name": "myioserver",
+    "version": "0.1.0",
+    "main": "index.mjs",
+    "type": "module",
+    "private": true,
+    "dependencies": {
+        "http": "^0.0.1-security",
+        "socket.io": "^4.7.2"
+    }
+}

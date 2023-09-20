@@ -1,13 +1,13 @@
 "use client";
 import { FormEventHandler, useEffect, useState, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { io, Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 import { Button } from "@/components/ui/button";
-import ChatComponent from "./ChatComponent";
 import Image from "next/image";
 import { RefreshCw } from "lucide-react";
+//import ChatComponent from "./ChatComponent";
 
-let socket = io("http://localhost:4005");
+let socket = io("http://localhost:4001");
 let gameRoom = "";
 
 let playerChoice = "";
@@ -17,14 +17,14 @@ let rivalNext = false;
 let nextBlockedd = false;
 
 export default function Page() {
-  const { data: session } = useSession();
-  const [gameOver, setGameOver] = useState<boolean>(false);
-  const [winner, setWinner] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
-  const [messages, setMessages] = useState<Data[]>([]);
-  const [room, setRoom] = useState<string>("");
-  const ref = useRef<HTMLDivElement>(null);
-  const [result, setResult] = useState("");
+  //const { data: session } = useSession();
+  //const [gameOver, setGameOver] = useState<boolean>(false);
+  //const [winner, setWinner] = useState<string>("");
+  //const [message, setMessage] = useState<string>("");
+  //const [messages, setMessages] = useState<Data[]>([]);
+  //const [room, setRoom] = useState<string>("");
+  //const ref = useRef<HTMLDivElement>(null);
+  //const [result, setResult] = useState("");
 
   const [userChoice, setUserChoice] = useState("");
   const [opponetChoice, setOpponentChoice] = useState("");
