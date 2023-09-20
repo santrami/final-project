@@ -62,6 +62,14 @@ export default function Page() {
       console.log(data);
     });
 
+    socket.on("choiceUser", (data)=>{
+      setUserChoice(data);
+    });
+    
+    socket.on("opponentChoice", (data) =>{
+      setOponnetChoice(data);
+    })
+
     return () => {
       socket.close();
     };

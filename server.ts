@@ -22,6 +22,7 @@ io.on("connect_error", (error) => {
 // Listen for new connections
 
 let choices:string[]= [];
+let users:string[]= [];
 //SOCKET IO ON CONNECTION
 io.on("connection", (socket) => {
   console.log(`User ${socket.id} connected`);
@@ -61,6 +62,7 @@ io.on("connection", (socket) => {
     //console.log(choice, userId);
 
     choices.push(choice);
+    users.push(userId);
     console.log(choices);
     let result:string = "";
     
@@ -70,8 +72,13 @@ io.on("connection", (socket) => {
 
        result = getResult(choices[0], choices[1]);
        //io.emit("result", { opponentChoice, choice, result });
-        socket.emit("result", { opponentChoice, choice, result });
+        io.to(users[0]).emit("choiceUser",choice);
+        io.to(users[1]).emit("opponentChoice",opponentChoice);
+        io.emit("result", result );
+        console.log(result);
+        
         choices=[];
+        
     }else{
       io.emit("waitingForPlayer", {message: "Esperando a otro jugador"});
     }
