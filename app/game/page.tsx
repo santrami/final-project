@@ -13,7 +13,8 @@ let gameRoom = "";
 let playerChoice = "";
 let rivalChoice = "";
 let playerResult = 0;
-let choiceBlocked = false;
+let rivalNext = false;
+let nextBlocked = false;
 
 export default function Page() {
   const { data: session } = useSession();
@@ -32,6 +33,7 @@ export default function Page() {
   const [round, setRound] = useState(1);
   const [nextRound, setNextRound] = useState(false);
   const [conState, setConState] = useState(false);
+  const [choiceBlocked, setChoiceBlocked] = useState(false);
 
   /*type Data = {
     user: string;
@@ -61,7 +63,16 @@ export default function Page() {
       rivalChoice = obj.choice;
       if(playerChoice !== "")
         roundResult();
-    })
+    });
+
+    socket.on("next_round_rps", () =>{
+      rivalNext = true;
+      if(nextBlocked)
+      {
+        console.log("recieverecievrecieverecieverecieve");
+        goNextRound();
+      }
+    });
 
     /*socket.on("restart_rps", () => {
       restart();
@@ -116,14 +127,12 @@ export default function Page() {
       return;
     socket.emit("choice_rps", { userChoice, room: gameRoom });
     playerChoice = userChoice;
-    choiceBlocked = true;
+    setChoiceBlocked(true);
     if(rivalChoice !== "")
       roundResult();
   };
 
   function roundResult(){
-    console.log(playerChoice);
-    console.log(rivalChoice);
     setOpponentChoice(rivalChoice);
     if (leftWon(playerChoice, rivalChoice))
     {
@@ -143,9 +152,9 @@ export default function Page() {
   function leftWon(left: string, right: string): boolean {
     if(left === "Papel" && right === "Piedra")
       return true;
-      if(left === "Piedra" && right === "Tijeras")
+    if(left === "Piedra" && right === "Tijeras")
       return true;
-      if(left === "Tijeras" && right === "Papel")
+    if(left === "Tijeras" && right === "Papel")
       return true;
     return false;
   }
@@ -157,7 +166,9 @@ export default function Page() {
     setRound(prev => prev + 1);
     playerChoice = "";
     rivalChoice = "";
-    choiceBlocked = false;
+    setChoiceBlocked(false);
+    rivalNext = false;
+    nextBlocked = false;
   }
 
 /*   const handleUser2Choice = (choice: string) => {
@@ -275,12 +286,18 @@ export default function Page() {
                 height="100"
               />
             </Button>
-            <Button onClick={() => handleUserChoice()}>Send choice</Button>
-            {nextRound && <Button onClick={() => goNextRound()}>
+            {(!choiceBlocked) && <Button onClick={() => handleUserChoice()}>Send choice {choiceBlocked}</Button>}
+            {(nextRound && !nextBlocked) && <Button onClick={() => {
+              nextBlocked = true;
+              socket.emit("s_next_round_rps", {room: gameRoom});
+              if(rivalNext)
+                goNextRound();
+            }}>Next Round</Button>}
+            {nextRound && <p>
               {(playerResult === 0) && "You Lost"}
               {(playerResult === 1) && "Tie"}
               {(playerResult === 2) && "You win"}
-              </Button>}
+              </p>}
           </div>
 
         </div>
