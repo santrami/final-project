@@ -293,7 +293,7 @@ export default function Page() {
                 goNextRound();
             }}>Next Round</Button>}
             {nextRound && <p>
-              {(playerResult === 0) && "You Lost"}
+              {(playerResult === 0) && "You Lose"}
               {(playerResult === 1) && "Tie"}
               {(playerResult === 2) && "You win"}
               </p>}
