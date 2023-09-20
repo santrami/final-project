@@ -14,7 +14,7 @@ let playerChoice = "";
 let rivalChoice = "";
 let playerResult = 0;
 let rivalNext = false;
-let nextBlocked = false;
+//let nextBlocked = false;
 
 export default function Page() {
   const { data: session } = useSession();
@@ -34,6 +34,7 @@ export default function Page() {
   const [nextRound, setNextRound] = useState(false);
   const [conState, setConState] = useState(false);
   const [choiceBlocked, setChoiceBlocked] = useState(false);
+  const [nextBlocked, setNextBlocked] = useState(false);
 
   useEffect(() => {
     socket.emit("give_room_rps");
@@ -50,13 +51,18 @@ export default function Page() {
       if(playerChoice !== "")
         roundResult();
     });
-
-    socket.on("next_round_rps", () =>{
-      rivalNext = true;
-      if(nextBlocked)
-        goNextRound();
-    });
   }, [socket]);
+
+  useEffect(() =>{
+    //this effect uses the state variable nextBlocked so it needs to update this variable value each time it changes!!!
+    //cannot put socket.on() on the useEffect that just run when the socket change
+    socket.on("next_round_rps", function a(){
+    rivalNext = true;
+    if(nextBlocked)
+      goNextRound();
+    console.log(socket.listeners("next_round_rps"));
+    });
+  }, [nextBlocked, socket])
 
   const handleUserChoice = () => {
     if (userChoice === "" || choiceBlocked) 
@@ -104,7 +110,7 @@ export default function Page() {
     rivalChoice = "";
     setChoiceBlocked(false);
     rivalNext = false;
-    nextBlocked = false;
+    setNextBlocked(false);
   }
 
   return (conState /*&& session*/) ? (
@@ -175,7 +181,7 @@ export default function Page() {
             </Button>
             {(!choiceBlocked) && <Button onClick={() => handleUserChoice()}>Send choice {choiceBlocked}</Button>}
             {(nextRound && !nextBlocked) && <Button onClick={() => {
-              nextBlocked = true;
+              setNextBlocked(true);
               socket.emit("s_next_round_rps", {room: gameRoom});
               if(rivalNext)
                 goNextRound();
