@@ -53,7 +53,6 @@ export default function Page() {
 
     socket.on("next_round_rps", () =>{
       rivalNext = true;
-      console.log("receiving", nextBlocked);
       if(nextBlocked)
         goNextRound();
     });
@@ -178,7 +177,6 @@ export default function Page() {
             {(nextRound && !nextBlocked) && <Button onClick={() => {
               nextBlocked = true;
               socket.emit("s_next_round_rps", {room: gameRoom});
-              console.log("sending", rivalNext);
               if(rivalNext)
                 goNextRound();
             }}>Next Round</Button>}
