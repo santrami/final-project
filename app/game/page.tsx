@@ -35,21 +35,7 @@ export default function Page() {
   const [conState, setConState] = useState(false);
   const [choiceBlocked, setChoiceBlocked] = useState(false);
 
-  /*type Data = {
-    user: string;
-    message: string;
-    room: string;
-  };
-
-  const joinRoom = () => {
-    if (room !== "") {
-      socket?.emit("join-room", room);
-    }
-    console.log(room);
-  };*/
-
   useEffect(() => {
-    //events que nomes emitim al principi de tot (no tornar a emetre al reconectar)
     socket.emit("give_room_rps");
   }, []);
 
@@ -71,54 +57,7 @@ export default function Page() {
       if(nextBlocked)
         goNextRound();
     });
-
-    /*socket.on("restart_rps", () => {
-      restart();
-    });*/
   }, [socket]);
-  
-  /*useEffect(() => {
-
-    //testing socket connection
-    socket.on("connect", () => {
-      console.log("connected");
-    });
-
-    socket.on("waitingForPlayer", (data) => {
-      console.log(data);
-      
-    });
-    socket.on("message", (data: Data) => {
-      console.log(data);
-      setMessages((prevMessages) => [...prevMessages, data]);
-    });
-
-    socket.on("result", (data) => {
-      //setOponnetChoice(data.opponentChoice);
-      setUserChoice(data.choice);
-      setOpponentChoice(data.opponentChoice);
-      setResult(data.result);
-      updateScore(data.result);
-      console.log(data);
-    });
-
-    return () => {
-      socket.close();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (messages.length) {
-      ref.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-    }
-  }, [messages.length]);
-
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    socket?.emit("message", { room, message, user: session?.user?.name });
-    setMessage("");
-    //setRoom("");
-  };*/
 
   const handleUserChoice = () => {
     if (userChoice === "" || choiceBlocked) 
@@ -168,55 +107,6 @@ export default function Page() {
     rivalNext = false;
     nextBlocked = false;
   }
-
-/*   const handleUser2Choice = (choice: string) => {
-    if (gameOver) return;
-    //console.log(choice);
-
-    setOponnetChoice(choice);
-    socket?.emit("choice", { choice, userId: session?.user?.id });
-  }; */
-
-  /*const updateScore = (result: string) => {
-    if (result === "Tú ganas!") {
-      setUserScore((prevScore) => prevScore + 1);
-    } else if (result === "Computadora gana!") {
-      setOpponentScore((prevScore) => prevScore + 1);
-    }
-  };
-
-  const handleNextRound = (): void => {
-    if (round < 3) {
-      setUserChoice("");
-      setOpponentChoice("");
-      setResult("");
-      setRound((prevRound) => prevRound + 1);
-    } else {
-      handleGameOver();
-    }
-  };
-
-  const handleGameOver = (): void => {
-    setGameOver(true);
-    if (userScore > opponentScore) {
-      setWinner("Tú ganas!");
-    } else if (userScore < opponentScore) {
-      setWinner("Computadora gana!");
-    } else {
-      setWinner("Es un empate!");
-    }
-  };
-
-  const resetGame = (): void => {
-    setUserChoice("");
-    setOpponentChoice("");
-    setResult("");
-    setUserScore(0);
-    setOpponentScore(0);
-    setRound(1);
-    setGameOver(false);
-    setWinner("");
-  };*/
 
   return (conState /*&& session*/) ? (
     <div className="flex flex-col">
