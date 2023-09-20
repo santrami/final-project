@@ -14,7 +14,7 @@ let playerChoice = "";
 let rivalChoice = "";
 let playerResult = 0;
 let rivalNext = false;
-//let nextBlocked = false;
+let nextBlockedd = false;
 
 export default function Page() {
   const { data: session } = useSession();
@@ -46,23 +46,21 @@ export default function Page() {
       setConState(true);
     });
 
-    socket.on("play_turn_rps", obj =>{
+    socket.on("play_turn_rps", obj => {
       rivalChoice = obj.choice;
       if(playerChoice !== "")
         roundResult();
     });
+    socket.on("next_round_rps", () => {
+      rivalNext = true;
+      if(nextBlockedd)
+          goNextRound();
+    });
   }, [socket]);
 
   useEffect(() =>{
-    //this effect uses the state variable nextBlocked so it needs to update this variable value each time it changes!!!
-    //cannot put socket.on() on the useEffect that just run when the socket change
-    socket.on("next_round_rps", function a(){
-    rivalNext = true;
-    if(nextBlocked)
-      goNextRound();
-    console.log(socket.listeners("next_round_rps"));
-    });
-  }, [nextBlocked, socket])
+    nextBlockedd  = nextBlocked;
+  }, [nextBlocked])
 
   const handleUserChoice = () => {
     if (userChoice === "" || choiceBlocked) 
