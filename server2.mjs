@@ -44,6 +44,8 @@ io.on("connection", (socket) => {
     socket.to(obj.room).emit("play_turn_rps", {choice: obj.userChoice});
   });
 
+  socket.on("s_next_round_rps", obj => socket.to(obj.room).emit("next_round_rps"));
+
 });
 //  socket.on("join-room", function (data) {
 //    socket.join(data);

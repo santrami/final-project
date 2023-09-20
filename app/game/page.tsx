@@ -14,7 +14,6 @@ let playerChoice = "";
 let rivalChoice = "";
 let playerResult = 0;
 let rivalNext = false;
-let nextBlocked = false;
 
 export default function Page() {
   const { data: session } = useSession();
@@ -34,6 +33,7 @@ export default function Page() {
   const [nextRound, setNextRound] = useState(false);
   const [conState, setConState] = useState(false);
   const [choiceBlocked, setChoiceBlocked] = useState(false);
+  const [nextBlocked, setNextBlocked] = useState(false);
 
   /*type Data = {
     user: string;
@@ -67,11 +67,9 @@ export default function Page() {
 
     socket.on("next_round_rps", () =>{
       rivalNext = true;
+      console.log("receiving", nextBlocked);
       if(nextBlocked)
-      {
-        console.log("recieverecievrecieverecieverecieve");
         goNextRound();
-      }
     });
 
     /*socket.on("restart_rps", () => {
@@ -168,7 +166,7 @@ export default function Page() {
     rivalChoice = "";
     setChoiceBlocked(false);
     rivalNext = false;
-    nextBlocked = false;
+    setNextBlocked(false);
   }
 
 /*   const handleUser2Choice = (choice: string) => {
@@ -288,8 +286,9 @@ export default function Page() {
             </Button>
             {(!choiceBlocked) && <Button onClick={() => handleUserChoice()}>Send choice {choiceBlocked}</Button>}
             {(nextRound && !nextBlocked) && <Button onClick={() => {
-              nextBlocked = true;
+              setNextBlocked(true);
               socket.emit("s_next_round_rps", {room: gameRoom});
+              console.log("sending", rivalNext);
               if(rivalNext)
                 goNextRound();
             }}>Next Round</Button>}
