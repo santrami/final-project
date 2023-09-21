@@ -19,7 +19,7 @@ function generateRandom(digits){
 let waitingSocketTTT = null;
 let waitingSocketRPS = null;
 
-io.on("connection", (socket) => {
+io.on("connection", socket => {
 
     console.log("socket connected ", socket.id);
 
@@ -30,6 +30,7 @@ io.on("connection", (socket) => {
         else {
             let num = generateRandom(20);
             socket.join(num);
+            waitingSocketTTT.join(num);
             const start = (Math.round(Math.random())) ? "X" : "O";
             waitingSocketTTT.to(num).emit("start_tictactoe", {room: num, player: "X", start});
             socket.to(num).emit("start_tictactoe", {room: num, player: "O", start});

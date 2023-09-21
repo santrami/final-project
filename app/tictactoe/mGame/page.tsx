@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 
 const socket = io("http://localhost:4001");
-//const socket = io("http://localhost:4001").connect();
 let gameRoom = "";
 let player = "";
 let blocked = false;
@@ -20,11 +19,11 @@ export default function Game() {
 
   const [conState, setConState] = useState(false);
   useEffect(() => {
-    //events que nomes emitim al principi de tot (no tornar a emetre al reconectar)
     socket.emit("give_room_tictactoe");
   }, []);
+
   useEffect(() => {
-    socket.on("start_tictactoe", (obj) => {
+    socket.on("start_tictactoe", obj => {
       gameRoom = obj.room;
       player = obj.player;
       setConState(true);
@@ -100,7 +99,7 @@ return conState /*&& session*/ ? (
       )}
       {xWinner && (
         <div className="flex flex-col">
-          <p className="self-center text-3xl text-neutral-100">{session.user.name} (X) gana</p>{" "}
+          <p className="self-center text-3xl text-neutral-100">{/*session.user.name*/} (X) gana</p>{" "}
           <Button
             variant="default"
             className="self-center text-2xl"
@@ -113,7 +112,7 @@ return conState /*&& session*/ ? (
       {oWinner && (
         <div className="flex flex-col">
           {" "}
-          <p className="self-center text-3xl text-neutral-100">{session.user.name} (O) gana</p>{" "}
+          <p className="self-center text-3xl text-neutral-100">{/*session.user.name*/} (O) gana</p>{" "}
           <Button
             variant="default"
             className="self-center text-2xl"
