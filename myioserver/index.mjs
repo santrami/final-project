@@ -64,6 +64,12 @@ io.on("connection", socket => {
     
       socket.on("s_next_round_rps", obj => socket.to(obj.room).emit("next_round_rps"));
 
+      //-----------------------------------------------------------------------------------
+
+      socket.on("sMessage", obj => {
+        socket.to(obj.room).emit("rMessage", {message:obj.message});
+      });
+
 });
 
 server.listen(4001, () => console.log("Server initialized on port 4001"));
