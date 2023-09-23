@@ -67,6 +67,7 @@ io.on("connection", socket => {
       //-----------------------------------------------------------------------------------
 
       socket.on("sMessage", obj => {
+        console.log("Message Recieved ", obj.message );
         socket.to(obj.room).emit("rMessage", {message:obj.message});
       });
 

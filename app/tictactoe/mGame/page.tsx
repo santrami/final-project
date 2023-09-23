@@ -1,6 +1,6 @@
 "use client";
 import { io } from "socket.io-client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
@@ -18,8 +18,6 @@ export default function Game() {
   const { data: session } = useSession();
 
   const [conState, setConState] = useState(false);
-
-  const [chat, setChat] = useState("");
 
   useEffect(() => {
     socket.emit("give_room_tictactoe");
@@ -45,10 +43,6 @@ export default function Game() {
         return curr;
       });
       blocked = false;
-    });
-
-    socket.on("rMessage", obj =>{
-      setChat(obj.message);
     });
   }, [socket]);
 
@@ -99,15 +93,7 @@ export default function Game() {
 
 return conState /*&& session*/ ? (
     <div className="flex flex-col">
-      <div>
-        <input type="text" placeholder="Message..."
-        onChange={ event =>{
-          socket.emit("sMessage", {room:gameRoom, message:event.target.value});
-        }}> 
-        </input>
-        <p className="text-neutral-100">Message: </p>
-        {(chat !== "") &&<p className="text-neutral-100">{chat}</p>}
-      </div>
+      <Message mySocket={socket}/>
       {!(xWinner || oWinner) && (
         <p className="self-center text-gray-50 text-2xl mb-5">
           Es el turno de {session?.user.name} ({turn})
@@ -191,5 +177,32 @@ function Board({ squares, clickCell }: BoardProps) {
         <Square value={squares[8]} click={() => clickCell(8)} />
       </div>
     </div>
+  );
+}
+
+
+function Message({mySocket}) {
+  const myMessage = useRef("");
+  const [chat, setChat] = useState("");
+
+  useEffect(() => {
+    socket.on("rMessage", obj =>{
+      console.log("aaa", obj.message);
+      setChat(obj.message);
+    });
+  }, [mySocket]);
+
+  return (
+    <form onSubmit={ e =>{
+      e.preventDefault();
+      mySocket.emit("sMessage", {room:gameRoom, message:myMessage.current});
+    }}>
+      <input type="text" placeholder="Message..."
+      onChange={ event =>myMessage.current = event.target.value }>
+      </input>
+      <button type="submit">Send</button>
+      <p className="text-neutral-100">Message: </p>
+      {(chat !== "") &&<p className="text-neutral-100">{chat}</p>}
+    </form>
   );
 }
