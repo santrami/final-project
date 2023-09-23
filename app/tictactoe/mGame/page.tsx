@@ -18,6 +18,9 @@ export default function Game() {
   const { data: session } = useSession();
 
   const [conState, setConState] = useState(false);
+
+  const [chat, setChat] = useState("");
+
   useEffect(() => {
     socket.emit("give_room_tictactoe");
   }, []);
@@ -42,6 +45,10 @@ export default function Game() {
         return curr;
       });
       blocked = false;
+    });
+
+    socket.on("rMessage", obj =>{
+      setChat(obj.message);
     });
   }, [socket]);
 
@@ -92,6 +99,15 @@ export default function Game() {
 
 return conState /*&& session*/ ? (
     <div className="flex flex-col">
+      <div>
+        <input type="text" placeholder="Message..."
+        onChange={ event =>{
+          socket.emit("sMessage", {room:gameRoom, message:event.target.value});
+        }}> 
+        </input>
+        <p className="text-neutral-100">Message: </p>
+        {(chat !== "") &&<p className="text-neutral-100">{chat}</p>}
+      </div>
       {!(xWinner || oWinner) && (
         <p className="self-center text-gray-50 text-2xl mb-5">
           Es el turno de {session?.user.name} ({turn})
