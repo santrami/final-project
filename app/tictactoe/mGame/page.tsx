@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
+import { Cuprum } from "next/font/google";
 
 const socket = io("http://localhost:4001");
 let gameRoom = "";
@@ -183,23 +184,36 @@ function Board({ squares, clickCell }: BoardProps) {
 
 function Chat({mySocket}) {
   const inputMessage = useRef("");
-  const [messages, setMessages] = useState("");
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    socket.on("rMessage", obj =>setMessages(obj.message))
+    socket.on("rMessage", obj => { 
+      setMessages(prev => {
+        const currMessages = prev.slice();
+        currMessages.push({message:obj.message, other:true});
+        return currMessages;
+      })
+    })
   }, [mySocket]);
 
   return (
     <form onSubmit={ e =>{
       e.preventDefault();
+      setMessages(prev => {
+        const currMessages = prev.slice();
+        currMessages.push({message:inputMessage.current, other:false});
+        return currMessages;
+      })
       mySocket.emit("sMessage", {room:gameRoom, message:inputMessage.current});
     }}>
       <input type="text" placeholder="Message..."
       onChange={ event =>inputMessage.current = event.target.value }>
       </input>
-      <button type="submit">Send</button>
-      <p className="text-neutral-100">Message: </p>
-      {(messages !== "") &&<p className="text-neutral-100">{messages}</p>}
+      <button type="submit" className="text-neutral-100">Send</button>
+      <p className="text-neutral-100">Messages: </p>
+      <ul>
+        {messages.map( (obj, id) => (obj.other) ? <li key={id} className="text-red-300">{obj.message}</li> : <li key={id} className="text-green-300">{obj.message}</li>)}
+      </ul>
     </form>
   );
 }
