@@ -5,7 +5,6 @@ export default function Chat({mySocket, room}) {
     const [messages, setMessages] = useState([]);
   
     useEffect(() => {
-        console.log(mySocket.id);
       mySocket.on("rMessage", obj => { 
         setMessages(prev => {
           const currMessages = prev.slice();
