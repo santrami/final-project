@@ -37,10 +37,10 @@ io.on("connection", socket => {
             waitingSocketTTT = null;
         }
     });
+
     socket.on("send_restart_tictactoe", room => io.to(room).emit("restart_tictactoe"));
-    socket.on("turn_play", obj => {
-        io.to(obj.room).emit("play_turn", {idx: obj.idx, player: obj.player})
-    });
+    
+    socket.on("turn_play", obj => io.to(obj.room).emit("play_turn", {idx: obj.idx, player: obj.player}));
 
 
     //--------------------------------------------------------------------------------------------------------------
@@ -58,18 +58,13 @@ io.on("connection", socket => {
         }
       });
     
-      socket.on("choice_rps", obj =>{
-        socket.to(obj.room).emit("play_turn_rps", {choice: obj.userChoice});
-      });
+      socket.on("choice_rps", obj => socket.to(obj.room).emit("play_turn_rps", {choice: obj.userChoice}) );
     
       socket.on("s_next_round_rps", obj => socket.to(obj.room).emit("next_round_rps"));
 
       //-----------------------------------------------------------------------------------
 
-      socket.on("sMessage", obj => {
-        console.log("Message Recieved ", obj.message );
-        socket.to(obj.room).emit("rMessage", {message:obj.message});
-      });
+      socket.on("sMessage", obj => socket.to(obj.room).emit("rMessage", {message:obj.message}));
 
 });
 
