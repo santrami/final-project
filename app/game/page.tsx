@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { RefreshCw } from "lucide-react";
+import Chat from "@/components/Chat";
 //import ChatComponent from "./ChatComponent";
 
 let socket = io("http://localhost:4001");
@@ -117,6 +118,7 @@ export default function Page() {
         Piedra, Papel y Tijeras
       </h1>
         <div className="container bg-slate-400">
+        <Chat mySocket={socket} room={gameRoom}/>
           <div className="flex justify-evenly">
             <div className="">
               <p>yo</p>
