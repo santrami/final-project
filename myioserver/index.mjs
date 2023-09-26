@@ -25,7 +25,7 @@ io.on("connection", socket => {
 
 
     socket.on("give_room_tictactoe", () => {
-        if(waitingSocketTTT === null)
+        if(waitingSocketTTT === null || !waitingSocketTTT.connected)
             waitingSocketTTT = socket;
         else {
             let num = generateRandom(20);
@@ -47,7 +47,7 @@ io.on("connection", socket => {
 
 
     socket.on("give_room_rps", () => {
-        if(waitingSocketRPS === null)
+        if(waitingSocketRPS === null || !waitingSocketRPS.connected)
                 waitingSocketRPS = socket;
         else {
             let num = generateRandom(20);
