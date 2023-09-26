@@ -1,7 +1,7 @@
-import {useState, useEffect, useRef } from "react";
+import {useState, useEffect } from "react";
 
 export default function Chat({mySocket, room}) {
-    const inputMessage = useRef("");
+    const [inputMessage, setInputMessage] = useState("");
     const [messages, setMessages] = useState([]);
   
     useEffect(() => {
@@ -19,14 +19,14 @@ export default function Chat({mySocket, room}) {
         e.preventDefault();
         setMessages(prev => {
           const currMessages = prev.slice();
-          currMessages.push({message:inputMessage.current, other:false});
+          currMessages.push({message:inputMessage, other:false});
           return currMessages;
         })
-        mySocket.emit("sMessage", {room, message:inputMessage.current});
+        setInputMessage("");
+        mySocket.emit("sMessage", {room, message:inputMessage});
       }}>
         <input type="text" placeholder="Message..."
-        onChange={ event =>inputMessage.current = event.target.value }>
-        </input>
+        onChange={ e => setInputMessage(e.target.value) } value={inputMessage}/>
         <button type="submit" className="text-neutral-100">Send</button>
         <p className="text-neutral-100">Messages: </p>
         <ul>
