@@ -26,7 +26,7 @@ export default function Game() {
   }, []);
 
   useEffect(() => {
-    socket.on("start_tictactoe", obj => {
+    socket.on("start_tictactoe", (obj) => {
       gameRoom = obj.room;
       player = obj.player;
       setConState(true);
@@ -93,9 +93,9 @@ export default function Game() {
     oSetWinner(false);
   }
 
-return conState /*&& session*/ ? (
+  return conState /*&& session*/ ? (
     <div className="flex flex-col">
-      <Chat mySocket={socket} room={gameRoom}/>
+      <Chat mySocket={socket} room={gameRoom} />
       {!(xWinner || oWinner) && (
         <p className="self-center text-gray-50 text-2xl mb-5">
           Es el turno de {session?.user.name} ({turn})
@@ -103,7 +103,9 @@ return conState /*&& session*/ ? (
       )}
       {xWinner && (
         <div className="flex flex-col">
-          <p className="self-center text-3xl text-neutral-100">{/*session.user.name*/} (X) gana</p>{" "}
+          <p className="self-center text-3xl text-neutral-100">
+            {/*session.user.name*/} (X) gana
+          </p>{" "}
           <Button
             variant="default"
             className="self-center text-2xl"
@@ -116,7 +118,9 @@ return conState /*&& session*/ ? (
       {oWinner && (
         <div className="flex flex-col">
           {" "}
-          <p className="self-center text-3xl text-neutral-100">{/*session.user.name*/} (O) gana</p>{" "}
+          <p className="self-center text-3xl text-neutral-100">
+            {/*session.user.name*/} (O) gana
+          </p>{" "}
           <Button
             variant="default"
             className="self-center text-2xl"
@@ -134,7 +138,10 @@ return conState /*&& session*/ ? (
   ) : (
     <div className="flex flex-col">
       <p className="self-center text-2xl text-slate-200">Esperando oponente</p>
-      <RefreshCw size={30} className="self-center text-7xl text-slate-200 animate-spin" />
+      <RefreshCw
+        size={30}
+        className="self-center text-7xl text-slate-200 animate-spin"
+      />
     </div>
   );
 }
