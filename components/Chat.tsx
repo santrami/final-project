@@ -1,8 +1,20 @@
+import { type Socket } from "socket.io-client";
 import { useState, useEffect } from "react";
 
-export default function Chat({ mySocket, room }) {
+type msgObjT = {
+  message: string;
+  other: boolean;
+};
+
+export default function Chat({
+  mySocket,
+  room,
+}: {
+  mySocket: Socket;
+  room: string;
+}) {
   const [inputMessage, setInputMessage] = useState("");
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<Array<msgObjT>>([]);
 
   useEffect(() => {
     mySocket.on("rMessage", (obj) => {

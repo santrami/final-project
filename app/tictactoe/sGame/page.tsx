@@ -58,7 +58,7 @@ export default function Game() {
   );
 }
 
-function Square({ value, click }) {
+function Square({ value, click }: { value: string; click: () => void }) {
   return (
     <button className="border-black border-2 w-5 h-5" onClick={click}>
       {value}
@@ -66,7 +66,13 @@ function Square({ value, click }) {
   );
 }
 
-function Board({ squares, clickCell }) {
+function Board({
+  squares,
+  clickCell,
+}: {
+  squares: Array<string>;
+  clickCell: (idx: number) => void;
+}) {
   return (
     <div>
       <div>

@@ -18,15 +18,6 @@ let rivalNext = false;
 let nextBlockedd = false;
 
 export default function Page() {
-  //const { data: session } = useSession();
-  //const [gameOver, setGameOver] = useState<boolean>(false);
-  //const [winner, setWinner] = useState<string>("");
-  //const [message, setMessage] = useState<string>("");
-  //const [messages, setMessages] = useState<Data[]>([]);
-  //const [room, setRoom] = useState<string>("");
-  //const ref = useRef<HTMLDivElement>(null);
-  //const [result, setResult] = useState("");
-
   const [userChoice, setUserChoice] = useState("");
   const [opponetChoice, setOpponentChoice] = useState("");
   const [userScore, setUserScore] = useState(0);
