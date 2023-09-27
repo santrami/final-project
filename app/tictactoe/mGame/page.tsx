@@ -94,46 +94,50 @@ export default function Game() {
   }
 
   return conState /*&& session*/ ? (
-    <div className="flex flex-col">
+    <div className="flex flex-row justify-between">
       <Chat mySocket={socket} room={gameRoom} />
-      {!(xWinner || oWinner) && (
-        <p className="self-center text-gray-50 text-2xl mb-5">
-          Es el turno de {session?.user.name} ({turn})
-        </p>
-      )}
-      {xWinner && (
-        <div className="flex flex-col">
-          <p className="self-center text-3xl text-neutral-100">
-            {/*session.user.name*/} (X) gana
-          </p>{" "}
-          <Button
-            variant="default"
-            className="self-center text-2xl"
-            onClick={() => socket.emit("send_restart_tictactoe", gameRoom)}
-          >
-            Restart
-          </Button>{" "}
-        </div>
-      )}
-      {oWinner && (
-        <div className="flex flex-col">
-          {" "}
-          <p className="self-center text-3xl text-neutral-100">
-            {/*session.user.name*/} (O) gana
-          </p>{" "}
-          <Button
-            variant="default"
-            className="self-center text-2xl"
-            onClick={() => socket.emit("send_restart_tictactoe", gameRoom)}
-          >
-            Restart
-          </Button>{" "}
-        </div>
-      )}
-      <Board squares={squares.slice()} clickCell={clickCell}></Board>
-      <h1 className="flex text-4xl self-center text-gray-300 p-2">
-        Tú eres {player}
-      </h1>
+      <div className="flex flex-col">
+        {!(xWinner || oWinner) && (
+          <p className="self-center text-gray-50 text-2xl mb-5">
+            Es el turno de {session?.user.name} ({turn})
+          </p>
+        )}
+        {xWinner && (
+          <div className="flex flex-col">
+            <p className="self-center text-3xl text-neutral-100">
+              {/*session.user.name*/} (X) gana
+            </p>{" "}
+            <Button
+              variant="default"
+              className="self-center text-2xl"
+              onClick={() => socket.emit("send_restart_tictactoe", gameRoom)}
+            >
+              Restart
+            </Button>{" "}
+          </div>
+        )}
+        {oWinner && (
+          <div className="flex flex-col">
+            {" "}
+            <p className="self-center text-3xl text-neutral-100">
+              {/*session.user.name*/} (O) gana
+            </p>{" "}
+            <Button
+              variant="default"
+              className="self-center text-2xl"
+              onClick={() => socket.emit("send_restart_tictactoe", gameRoom)}
+            >
+              Restart
+            </Button>{" "}
+          </div>
+        )}
+        <Board squares={squares.slice()} clickCell={clickCell}></Board>
+        <h1 className="flex text-4xl self-center text-gray-300 p-2">
+          Tú eres {player}
+        </h1>
+      </div>
+      {/*Empty div to be able to apply space between correctly*/}
+      <div></div>
     </div>
   ) : (
     <div className="flex flex-col">

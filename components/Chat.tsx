@@ -30,6 +30,7 @@ export default function Chat({ mySocket, room }) {
       <input
         type="text"
         placeholder="Message..."
+        maxLength={50}
         onChange={(e) => setInputMessage(e.target.value)}
         value={inputMessage}
       />
@@ -37,7 +38,7 @@ export default function Chat({ mySocket, room }) {
         Send
       </button>
       <p className="text-neutral-100">Messages: </p>
-      <ul>
+      <ul className="overflow-y-scroll max-h-96">
         {messages.map((obj, id) =>
           obj.other ? (
             <li key={id} className="text-red-300">

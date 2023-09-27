@@ -106,108 +106,116 @@ export default function Page() {
         Piedra, Papel y Tijeras
       </h1>
       <div className="container bg-slate-400">
-        <Chat mySocket={socket} room={gameRoom} />
-        <div className="flex justify-evenly">
-          <div className="">
-            <p>yo</p>
-            <Image
-              className=""
-              priority
-              alt="election"
-              src={userChoice ? `/${userChoice}.png` : "/question.png"}
-              width="200"
-              height="300"
-            />
-            <div>puntaje: {userScore}</div>
-          </div>
+        <div className="flex flex-row justify-between">
+          <Chat mySocket={socket} room={gameRoom} />
           <div>
-            <p>rival</p>
-            <Image
-              className=""
-              priority
-              alt="election"
-              src={opponetChoice ? `/${opponetChoice}.png` : "/question.png"}
-              width="200"
-              height="300"
-            />
-            <div>puntaje: {opponentScore}</div>
+            <div className="flex justify-evenly">
+              <div className="">
+                <p>yo</p>
+                <Image
+                  className=""
+                  priority
+                  alt="election"
+                  src={userChoice ? `/${userChoice}.png` : "/question.png"}
+                  width="200"
+                  height="300"
+                />
+                <div>puntaje: {userScore}</div>
+              </div>
+              <div>
+                <p>rival</p>
+                <Image
+                  className=""
+                  priority
+                  alt="election"
+                  src={
+                    opponetChoice ? `/${opponetChoice}.png` : "/question.png"
+                  }
+                  width="200"
+                  height="300"
+                />
+                <div>puntaje: {opponentScore}</div>
+              </div>
+            </div>
+            <div className="flex items-center justify-center">
+              <div className="bg-slate-800 rounded-lg py-5 px-3 my-6 text-zinc-400">
+                Ronda {round}
+              </div>
+            </div>
+            {/*<div className="">Haz tu elección</div>*/}
+            <div className="flex items-center justify-center gap-9">
+              <Button
+                className="hover:bg-transparent hover:scale-125 transition-all"
+                variant="ghost"
+                onClick={() => {
+                  if (!choiceBlocked) setUserChoice("Piedra");
+                }}
+              >
+                <Image
+                  className=""
+                  alt="piedra"
+                  src="/piedra.png"
+                  width="100"
+                  height="100"
+                />
+              </Button>
+              <Button
+                className="hover:bg-transparent hover:scale-125 transition-all"
+                variant="ghost"
+                onClick={() => {
+                  if (!choiceBlocked) setUserChoice("Papel");
+                }}
+              >
+                <Image
+                  className=""
+                  alt="papel"
+                  src="/papel.png"
+                  width="100"
+                  height="100"
+                />
+              </Button>
+              <Button
+                className="hover:bg-transparent hover:scale-125 transition-all"
+                variant="ghost"
+                onClick={() => {
+                  if (!choiceBlocked) setUserChoice("Tijeras");
+                }}
+              >
+                <Image
+                  className=""
+                  alt="tijeras"
+                  src="/tijeras.png"
+                  width="100"
+                  height="100"
+                />
+              </Button>
+              {!choiceBlocked && (
+                <Button onClick={() => handleUserChoice()}>
+                  Send choice {choiceBlocked}
+                </Button>
+              )}
+              {nextRound && !nextBlocked && (
+                <Button
+                  onClick={() => {
+                    setNextBlocked(true);
+                    socket.emit("s_next_round_rps", { room: gameRoom });
+                    if (rivalNext) goNextRound();
+                  }}
+                >
+                  Next Round
+                </Button>
+              )}
+              {nextRound && (
+                <p>
+                  {playerResult === 0 && "You Lose"}
+                  {playerResult === 1 && "Tie"}
+                  {playerResult === 2 && "You win"}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="flex items-center justify-center">
-          <div className="bg-slate-800 rounded-lg py-5 px-3 my-6 text-zinc-400">
-            Ronda {round}
-          </div>
-        </div>
-        <div className="">Haz tu elección</div>
-        <div className="flex items-center justify-center gap-9">
-          <Button
-            className="hover:bg-transparent hover:scale-125 transition-all"
-            variant="ghost"
-            onClick={() => {
-              if (!choiceBlocked) setUserChoice("Piedra");
-            }}
-          >
-            <Image
-              className=""
-              alt="piedra"
-              src="/piedra.png"
-              width="100"
-              height="100"
-            />
-          </Button>
-          <Button
-            className="hover:bg-transparent hover:scale-125 transition-all"
-            variant="ghost"
-            onClick={() => {
-              if (!choiceBlocked) setUserChoice("Papel");
-            }}
-          >
-            <Image
-              className=""
-              alt="papel"
-              src="/papel.png"
-              width="100"
-              height="100"
-            />
-          </Button>
-          <Button
-            className="hover:bg-transparent hover:scale-125 transition-all"
-            variant="ghost"
-            onClick={() => {
-              if (!choiceBlocked) setUserChoice("Tijeras");
-            }}
-          >
-            <Image
-              className=""
-              alt="tijeras"
-              src="/tijeras.png"
-              width="100"
-              height="100"
-            />
-          </Button>
-          {!choiceBlocked && (
-            <Button onClick={() => handleUserChoice()}>
-              Send choice {choiceBlocked}
-            </Button>
-          )}
-          {nextRound && !nextBlocked && (
-            <Button
-              onClick={() => {
-                setNextBlocked(true);
-                socket.emit("s_next_round_rps", { room: gameRoom });
-                if (rivalNext) goNextRound();
-              }}
-            >
-              Next Round
-            </Button>
-          )}
-          {nextRound && (
-            <p>
-              {playerResult === 0 && "You Lose"}
-              {playerResult === 1 && "Tie"}
-              {playerResult === 2 && "You win"}
-            </p>
-          )}
+          {/*Empty div to be able to apply space between correctly*/}
+          <div></div>
         </div>
       </div>
     </div>
