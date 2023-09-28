@@ -12,7 +12,7 @@ let player = "";
 let blocked = false;
 
 export default function Game() {
-  const [squares, setSquares] = useState(Array(9).fill(null));
+  const [squares, setSquares] = useState(Array(9).fill(""));
   const [turn, setTurn] = useState("");
   const [xWinner, xSetWinner] = useState(false);
   const [oWinner, oSetWinner] = useState(false);
@@ -53,13 +53,7 @@ export default function Game() {
   }, [squares]);
 
   function clickCell(idx: number) {
-    if (
-      xWinner ||
-      oWinner ||
-      squares[idx] !== null ||
-      turn !== player ||
-      blocked
-    )
+    if (xWinner || oWinner || squares[idx] !== "" || turn !== player || blocked)
       return;
     socket.emit("turn_play", { room: gameRoom, idx, player });
     blocked = true;
@@ -87,7 +81,7 @@ export default function Game() {
   }
 
   function restart() {
-    setSquares(Array(9).fill(null));
+    setSquares(Array(9).fill(""));
     xSetWinner(false);
     oSetWinner(false);
   }
@@ -96,7 +90,7 @@ export default function Game() {
     value: string;
     click: () => void;
   };
-  
+
   function Square({ value, click }: SquareProps) {
     return (
       <button
@@ -107,12 +101,12 @@ export default function Game() {
       </button>
     );
   }
-  
+
   type BoardProps = {
     squares: Array<string>;
     clickCell: (idx: number) => void;
   };
-  
+
   function Board({ squares, clickCell }: BoardProps) {
     return (
       <div className="flex flex-col justify-center items-center gap-1">
@@ -135,11 +129,17 @@ export default function Game() {
     );
   }
 
+  function tie(): boolean {
+    if (xWinner || oWinner) return false;
+    for (let i = 0; i < 9; ++i) if (squares[i] === "") return false;
+    return true;
+  }
+
   return conState && session ? (
     <div className="flex flex-row justify-center h-[50vh]">
       <Chat mySocket={socket} room={gameRoom} />
       <div className="flex flex-col">
-        {!(xWinner || oWinner) && (
+        {!(tie() || xWinner || oWinner) && (
           <p className="self-center text-gray-50 text-2xl mb-5">
             Es el turno de ({turn})
           </p>
@@ -164,6 +164,19 @@ export default function Game() {
             <p className="self-center text-3xl text-neutral-100">
               {/*session.user.name*/} (O) gana
             </p>{" "}
+            <Button
+              variant="default"
+              className="self-center text-2xl"
+              onClick={() => socket.emit("send_restart_tictactoe", gameRoom)}
+            >
+              Restart
+            </Button>{" "}
+          </div>
+        )}
+        {tie() && (
+          <div className="flex flex-col">
+            {" "}
+            <p className="self-center text-3xl text-neutral-100">Tie</p>{" "}
             <Button
               variant="default"
               className="self-center text-2xl"
