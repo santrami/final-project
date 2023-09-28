@@ -1,11 +1,10 @@
 "use client";
 import { io } from "socket.io-client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 import Chat from "@/components/Chat";
-import { Cuprum } from "next/font/google";
 
 const socket = io("http://localhost:4001");
 let gameRoom = "";
@@ -93,8 +92,51 @@ export default function Game() {
     oSetWinner(false);
   }
 
-  return conState /*&& session*/ ? (
-    <div className="flex flex-row justify-between">
+  type SquareProps = {
+    value: string;
+    click: () => void;
+  };
+  
+  function Square({ value, click }: SquareProps) {
+    return (
+      <button
+        className="w-28 h-28 hover:bg-slate-500 text-6xl font-semibold bg-white"
+        onClick={click}
+      >
+        {value}
+      </button>
+    );
+  }
+  
+  type BoardProps = {
+    squares: Array<string>;
+    clickCell: (idx: number) => void;
+  };
+  
+  function Board({ squares, clickCell }: BoardProps) {
+    return (
+      <div className="flex flex-col justify-center items-center gap-1">
+        <div className="flex gap-1">
+          <Square value={squares[0]} click={() => clickCell(0)} />
+          <Square value={squares[1]} click={() => clickCell(1)} />
+          <Square value={squares[2]} click={() => clickCell(2)} />
+        </div>
+        <div className="flex gap-1">
+          <Square value={squares[3]} click={() => clickCell(3)} />
+          <Square value={squares[4]} click={() => clickCell(4)} />
+          <Square value={squares[5]} click={() => clickCell(5)} />
+        </div>
+        <div className="flex gap-1">
+          <Square value={squares[6]} click={() => clickCell(6)} />
+          <Square value={squares[7]} click={() => clickCell(7)} />
+          <Square value={squares[8]} click={() => clickCell(8)} />
+        </div>
+      </div>
+    );
+  }
+
+  return conState && session ? (
+    <div className="flex flex-row justify-center h-[50vh]">
       <Chat mySocket={socket} room={gameRoom} />
       <div className="flex flex-col">
         {!(xWinner || oWinner) && (
@@ -146,49 +188,6 @@ export default function Game() {
         size={30}
         className="self-center text-7xl text-slate-200 animate-spin"
       />
-    </div>
-  );
-}
-
-type SquareProps = {
-  value: string;
-  click: () => void;
-};
-
-function Square({ value, click }: SquareProps) {
-  return (
-    <button
-      className="w-28 h-28 hover:bg-slate-500 text-6xl font-semibold bg-white"
-      onClick={click}
-    >
-      {value}
-    </button>
-  );
-}
-
-type BoardProps = {
-  squares: Array<string>;
-  clickCell: (idx: number) => void;
-};
-
-function Board({ squares, clickCell }: BoardProps) {
-  return (
-    <div className="flex flex-col justify-center items-center gap-1">
-      <div className="flex gap-1">
-        <Square value={squares[0]} click={() => clickCell(0)} />
-        <Square value={squares[1]} click={() => clickCell(1)} />
-        <Square value={squares[2]} click={() => clickCell(2)} />
-      </div>
-      <div className="flex gap-1">
-        <Square value={squares[3]} click={() => clickCell(3)} />
-        <Square value={squares[4]} click={() => clickCell(4)} />
-        <Square value={squares[5]} click={() => clickCell(5)} />
-      </div>
-      <div className="flex gap-1">
-        <Square value={squares[6]} click={() => clickCell(6)} />
-        <Square value={squares[7]} click={() => clickCell(7)} />
-        <Square value={squares[8]} click={() => clickCell(8)} />
-      </div>
     </div>
   );
 }

@@ -7,7 +7,7 @@
     "start": "next start",
     "lint": "next lint",
     "build": "next build",
-    "server": "bun --hot server.ts"
+    "server": "bun --hot ./myioserver/index.mjs"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",

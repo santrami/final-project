@@ -1,6 +1,6 @@
 "use client";
-import { FormEventHandler, useEffect, useState, useRef } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useEffect, useState, useRef } from "react";
+import { useSession } from "next-auth/react";
 import { io } from "socket.io-client";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -18,6 +18,7 @@ let rivalNext = false;
 let nextBlockedd = false;
 
 export default function Page() {
+  const { data: session } = useSession();
   const [userChoice, setUserChoice] = useState("");
   const [opponetChoice, setOpponentChoice] = useState("");
   const [userScore, setUserScore] = useState(0);
@@ -91,18 +92,18 @@ export default function Page() {
     setNextBlocked(false);
   }
 
-  return conState /*&& session*/ ? (
+  return conState && session ? (
     <div className="flex flex-col">
       <h1 className="text-center mx-auto font-sans text-3xl p-5 bg-slate-200 w-full">
         Piedra, Papel y Tijeras
       </h1>
       <div className="container bg-slate-400">
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row justify-center h-auto">
           <Chat mySocket={socket} room={gameRoom} />
           <div>
             <div className="flex justify-evenly">
-              <div className="">
-                <p>yo</p>
+              <div className="flex flex-col items-center">
+                <p className="text-2xl text-gray-700 mb-6">yo</p>
                 <Image
                   className=""
                   priority
@@ -112,9 +113,9 @@ export default function Page() {
                   height="300"
                 />
                 <div>puntaje: {userScore}</div>
-              </div>
-              <div>
-                <p>rival</p>
+              </div >
+              <div className="flex flex-col items-center">
+                <p className="text-2xl text-gray-700 mb-6">rival</p>
                 <Image
                   className=""
                   priority
@@ -133,7 +134,6 @@ export default function Page() {
                 Ronda {round}
               </div>
             </div>
-            {/*<div className="">Haz tu elección</div>*/}
             <div className="flex items-center justify-center gap-9">
               <Button
                 className="hover:bg-transparent hover:scale-125 transition-all"
@@ -182,7 +182,7 @@ export default function Page() {
               </Button>
               {!choiceBlocked && (
                 <Button onClick={() => handleUserChoice()}>
-                  Send choice {choiceBlocked}
+                  Enviar elección {choiceBlocked}
                 </Button>
               )}
               {nextRound && !nextBlocked && (
@@ -205,13 +205,11 @@ export default function Page() {
               )}
             </div>
           </div>
-          {/*Empty div to be able to apply space between correctly*/}
-          <div></div>
         </div>
       </div>
     </div>
   ) : (
-    <div className="flex flex-col">
+    <div className="flex flex-col justify-center items-center bg-slate-800 h-screen">
       <p className="self-center text-2xl text-slate-200">Esperando oponente</p>
       <RefreshCw
         size={30}

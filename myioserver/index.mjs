@@ -71,7 +71,7 @@ io.on("connection", (socket) => {
   //-----------------------------------------------------------------------------------
 
   socket.on("sMessage", (obj) =>
-    socket.to(obj.room).emit("rMessage", { message: obj.message })
+    socket.to(obj.room).emit("rMessage", { message: obj.message, name: obj.name })
   );
 });
 

@@ -7,17 +7,13 @@ type ChatProps = {
   handleSubmit: FormEventHandler<HTMLFormElement>;
   message: string;
   setMessage: Dispatch<React.SetStateAction<string>>;
-  room: string;
-  joinRoom: () => void;
-  setRoom: Dispatch<React.SetStateAction<string>>;
 };
 
-const Chat: React.FC<ChatProps> = ({
+const Message: React.FC<ChatProps> = ({
   handleSubmit,
   message,
   setMessage,
-  name,
-  room, joinRoom, setRoom
+ 
 }) => {
   return (
     <>
@@ -35,19 +31,8 @@ const Chat: React.FC<ChatProps> = ({
       />
       <Button variant="default">Enviar</Button>      
     </form>
-    <Input
-        type="text"
-        placeholder="elije una sala"
-        name="room"
-        id="room"
-        value={room}
-        onChange={(e) => {
-          setRoom(e.target.value);
-        }}
-      />
-      <Button onClick={joinRoom} variant="default">Entrar</Button>
     </>
   );
 };
 
-export default Chat;
+export default Message;

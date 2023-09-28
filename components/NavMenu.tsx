@@ -25,7 +25,17 @@ export default function NavMenu() {
             <NavigationMenuContent className="px-4">
               <Link href="/game" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Game
+                  Game1
+                </NavigationMenuLink>
+              </Link>
+              <Link href="/tictactoe" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Game2
+                </NavigationMenuLink>
+              </Link>
+              <Link href="/" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  home
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuContent>
