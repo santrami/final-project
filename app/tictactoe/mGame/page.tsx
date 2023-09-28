@@ -142,12 +142,11 @@ export default function Game() {
         {oWinner || xWinner || tie() ? (
           <div className="flex flex-col">
             {" "}
-            {(xWinner || oWinner) && (
+            {xWinner || oWinner ? (
               <p className="self-center text-3xl text-neutral-100">
                 {session.user.name} ({xWinner ? "X" : "O"}) gana
               </p>
-            )}
-            {tie() && (
+            ) : (
               <p className="self-center text-3xl text-neutral-100">Tie</p>
             )}{" "}
             <Button
