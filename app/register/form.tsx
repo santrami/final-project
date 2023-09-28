@@ -60,7 +60,7 @@ export const RegisterForm = () => {
           name="name"
           value={formValues.name}
           onChange={handleChange}
-          placeholder="Name"
+          placeholder="Nombre de usuario"
           className={`${input_style}`}
         />
       </div>
@@ -71,7 +71,7 @@ export const RegisterForm = () => {
           name="email"
           value={formValues.email}
           onChange={handleChange}
-          placeholder="Email address"
+          placeholder="correo electrónico"
           className={`${input_style}`}
         />
       </div>
@@ -92,7 +92,7 @@ export const RegisterForm = () => {
         className="inline-block px-7 py-4 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
         disabled={loading}
       >
-        {loading ? "loading..." : "Sign Up"}
+        {loading ? "loading..." : "Registro"}
       </button>
     </form>
   );

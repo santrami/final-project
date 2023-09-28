@@ -13,35 +13,32 @@ import SigninButton from "./SigninButton";
 
 export default function NavMenu() {
   return (
-    <div className="flex justify-between">
-      {/* <Button variant="default">
-        <Link href="/game">link</Link>
-      </Button> */}
-      <SigninButton/>
+    <div className="flex items-center justify-center">
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
+            <NavigationMenuTrigger>Menu</NavigationMenuTrigger>
             <NavigationMenuContent className="px-4">
+              <Link href="/" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Inicio
+                </NavigationMenuLink>
+              </Link> 
               <Link href="/game" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Game1
+                  Piedra Papel o Tijera
                 </NavigationMenuLink>
               </Link>
               <Link href="/tictactoe" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Game2
-                </NavigationMenuLink>
-              </Link>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  home
+                  Tres en Raya
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuContent>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
+      <SigninButton />
     </div>
   );
 }

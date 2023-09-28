@@ -21,7 +21,7 @@ const Message: React.FC<ChatProps> = ({
       <Input
         type="text"
         placeholder="escribe un mensaje"
-        minLength={6}
+        minLength={0}
         name="message"
         id="message"
         value={message}

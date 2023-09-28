@@ -5,27 +5,18 @@ import Link from "next/link";
 function SigninButton() {
   const { data: session } = useSession();
   session?.user.accessToken;
-  //console.log(session)
-
   if (session && session.user) {
     return (
       <div className="flex gap-6 items-center">
         <div className="flex gap-3">
-          {/* <Image
-            src={session.user.image ? session.user.image : "https://placehold.co/600x400"}
-            alt="userIcon"
-            width="30"
-            height="30"
-          /> */}
           <p className="text-sky-600">{session.user.name}</p>
         </div>
-        <Button onClick={() => signOut()} variant="default">
+        <Button onClick={() => signOut()} variant="destructive">
           Sign Out
         </Button>
       </div>
     );
   }
-
   return (
     <>
       <Button
