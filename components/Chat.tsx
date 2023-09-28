@@ -45,6 +45,8 @@ export default function Chat({
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    if(inputMessage === "")
+      return;
     setMessages((prev) => {
       const currMessages = prev.slice();
       currMessages.push({ message: inputMessage, other: false });
