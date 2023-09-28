@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   })
 
   if (userFound) {
-    return new Response(JSON.stringify({ error: "User already exists" }), {
+    return new Response(JSON.stringify({ error: "El usuario ya existe" }), {
       status: 400,
     });
   }

@@ -141,7 +141,7 @@ export default function Game() {
       <div className="flex flex-col">
         {!(xWinner || oWinner) && (
           <p className="self-center text-gray-50 text-2xl mb-5">
-            Es el turno de {session?.user.name} ({turn})
+            Es el turno de ({turn})
           </p>
         )}
         {xWinner && (
